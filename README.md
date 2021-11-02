@@ -4,9 +4,9 @@
 --------
 
 ## Integrantes
-- 
-- 
-- 
+- Juan Sebastian Sara Junco
+- Denis Irala Morales
+- Plinio Matias Avendaño Vargas
 
 ----
 
