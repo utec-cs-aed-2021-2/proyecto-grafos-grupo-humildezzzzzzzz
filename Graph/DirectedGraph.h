@@ -7,9 +7,9 @@ template<typename TV, typename TE>
 class DirectedGraph : public Graph<TV, TE>{
     public:
     bool insertVertex(string id, TV vertex){
-        Vertex<TV, TV>* vertice = new Vertex<TV, TV>;
+        Vertex<TV, TE>* vertice = new Vertex<TV, TE>;
         vertice->data=vertex;
-        vertexes[id]=vertex;
+        vertexes[id]=vertice;
     };   
     bool createEdge(string id1, string id2, TE w) = 0;     
     bool deleteVertex(string id) = 0;     
