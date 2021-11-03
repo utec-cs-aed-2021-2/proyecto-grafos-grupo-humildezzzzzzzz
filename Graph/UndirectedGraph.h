@@ -141,4 +141,32 @@ bool UnDirectedGraph<TV,TE>::deleteEdge(string id1, string id2){
     return true;
 }
 
+template<typename TV, typename TE>
+float UnDirectedGraph<TV,TE>::density(){
+    std::list<Edge<TV, TE>*> aristas;
+    for(auto a =begin(vertexes); a!=end(vertexes); a++){
+        //TO DO
+        //Iterar sobre todos los vertices y obtener todas las aristas
+    }
+    int num_aristas=aristas.size();
+    int num_vertices=vertexes.size()
+    return 2*num_aristas/(num_vertices*(num_vertices-1))
+}
+
+template<typename TV, typename TE>
+bool UnDirectedGraph<TV,TE>::isDense(float threshold = 0.5){ return this->density()>threshold;}
+
+template<typename TV, typename TE>
+bool UnDirectedGraph<TV,TE>::isConnected(){
+     std::unordered_map<string, Vertex<TV, TE>*>  visited;
+    for(auto a=begin(vertexes); a!=end(vertexes); a++){
+        
+    }
+}
+
+template<typename TV, typename TE>
+bool UnDirectedGraph<TV,TE>::isStronglyConnected(){
+    return isConnected();
+}
+
 #endif
