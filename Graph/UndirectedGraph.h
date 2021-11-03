@@ -3,7 +3,7 @@
 
 #include "graph.h"
 
-template<typename TV, typename TE, typename T>
+template<typename TV, typename TE>
 Vertex<TV,TE> llegadas(string id, list<Edge<TV, TE>*> arista){
     auto todos_aristas = &(this->vertexes[id])->edges;
     if(id == ((*todos_aristas->begin())->vertexes[0])->id){
@@ -14,7 +14,7 @@ Vertex<TV,TE> llegadas(string id, list<Edge<TV, TE>*> arista){
     }
 }
 
-template<typename TV, typename TE, typename T>
+template<typename TV, typename TE>
 Vertex<TV,TE> inicios(string id, list<Edge<TV,TE>*> arista){
     auto todos_aristas = &(this->vertexes[id])->edges;
     if(id != ((*todos_aristas->begin())->vertexes[1])->id){
