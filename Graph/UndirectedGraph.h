@@ -3,6 +3,28 @@
 
 #include "graph.h"
 
+template<typename TV, typename TE, typename T>
+Vertex<TV,TE> llegadas(string id, list<Edge<TV, TE>*> arista){
+    auto todos_aristas = &(this->vertexes[id])->edges;
+    if(id == ((*todos_aristas->begin())->vertexes[0])->id){
+        return (*todos_aristas->begin())->vertexes[1]
+    }
+    else{
+        return (*todos_aristas->begin())->vertexes[0]
+    }
+}
+
+template<typename TV, typename TE, typename T>
+Vertex<TV,TE> inicios(string id, list<Edge<TV,TE>*> arista){
+    auto todos_aristas = &(this->vertexes[id])->edges;
+    if(id != ((*todos_aristas->begin())->vertexes[1])->id){
+        return (*todos_aristas->begin())->vertexes[0]
+    }
+    else{
+        return (*todos_aristas->begin())->vertexes[1]
+    }
+}
+
 template<typename TV, typename TE>
 class UnDirectedGraph : public Graph<TV, TE>{
 
@@ -32,7 +54,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
 
 template<typename TV, typename TE>
 bool UnDirectedGraph<TV,TE>::insertVertex(string id, TV vertex){
-    if(this->vertexes.find(id) != this->vertexes.end()){
+    if(this->vertexes.count(id) == 1){
         return false;
     }
     auto *new_vertex = new Vertex<TV,TE>;
@@ -44,7 +66,7 @@ bool UnDirectedGraph<TV,TE>::insertVertex(string id, TV vertex){
 
 template<typename TV, typename TE>
 bool UnDirectedGraph<TV,TE>::createEdge(string id1, string id2, TE w){
-    if(this->vertexes.find(id1) != this->vertexes.end() || this->vertexes.find(id2) != this->vertexes.end()){
+    if(this->vertexes.count(id1) == 0 || this->vertexes.count(id2) == 0){
         return false;
     }
     auto* new_edge = new Edge<TV,TE>;
@@ -53,13 +75,7 @@ bool UnDirectedGraph<TV,TE>::createEdge(string id1, string id2, TE w){
     new_edge->weight = w;
 
     this->vertexes[id1]->edges.push_back(new_edge);
-
-    auto* new_edge2 = new Edge<TV,TE>;
-    new_edge2->vertexes[0] = this->vertexes[id1];
-    new_edge2->vertexes[1] = this->vertexes[id2];
-    new_edge2->weight = w;
-
-    this->vertexes[id2]->edges.push_back(new_edge2);
+    this->vertexes[id2]->edges.push_back(new_edge);
     nro_aristas++;
 
     return true;
@@ -67,15 +83,15 @@ bool UnDirectedGraph<TV,TE>::createEdge(string id1, string id2, TE w){
 
 template<typename TV, typename TE>
 bool UnDirectedGraph<TV,TE>::deleteEdges(string id){
-    if (this->vertexes.find(id) == this->vertexes.end()){
+    if (this->vertexes.count(id) == 0){
         return false;
     }
 
     auto aristas_ady = &(this->vertexes[id])->edges; //solo tomo la lista de aristas para ese vertice
 
     while(!aristas_ady->empty()){
-        auto inicio = (*aristas_ady->begin())->vertexes[0]; //primer vertice de la primera arista
-        auto llegada = (*aristas_ady->begin())->vertexes[1]; //vertice de llegada de la primera arista
+        auto inicio = inicios(id,aristas_ady); //primer vertice de la primera arista
+        auto llegada = llegadas(id,aristas_ady)//vertice de llegada de la primera arista
 
         for(auto i = (llegada->edges).begin(); i != (llegada->edges).end(); i++){ //recorro las demas aristas adyacentes al nodo de llegada
             if((*i)->vertexes[1] == inicio){ //si su vertice de llegada es igual al primer vertice de nuestra arista a eliminar
@@ -91,7 +107,7 @@ bool UnDirectedGraph<TV,TE>::deleteEdges(string id){
 
 template<typename TV, typename TE>
 bool UnDirectedGraph<TV,TE>::deleteVertex(string id){
-    if(this->vertexes.find(id) != this->vertexes.end()){
+    if(this->vertexes.count(id) == 0){
         return false;
     }
 
@@ -102,20 +118,22 @@ bool UnDirectedGraph<TV,TE>::deleteVertex(string id){
 
 template<typename TV, typename TE>
 bool UnDirectedGraph<TV,TE>::deleteEdge(string id1, string id2){
-    if(this->vertexes.find(id1) != this->vertexes.end() || this->vertexes.find(id2) != this->vertexes.end()){
+    if(this->vertexes.count(id1) == 0 || this->vertexes.count(id2) == 0){
         return false;
     }
 
     auto aristas_ady_id1 = &(this->vertexes[id1])->edges;
+    auto llegada1 = llegadas(id1,aristas_ady_id1)
     for(auto i = aristas_ady_id1.begin(); i != aristas_ady_id1.end(); i++){
-        if(((*i)->vertexes[1])->id == id2){
+        if(llegada1->id == id2){
             aristas_ady_id1.erase(i);
         }
     }
 
     auto aristas_ady_id2 = &(this->vertexes[id2])->edges;
+    auto llegada2 = llegadas(id2,aristas_ady_id2)
     for(auto i = aristas_ady_id2.begin(); i != aristas_ady_id2.end(); i++){
-        if(((*i)->vertexes[1])->id == id1){
+        if(llegada2->id == id1){
             aristas_ady_id2.erase(i);
         }
     }
