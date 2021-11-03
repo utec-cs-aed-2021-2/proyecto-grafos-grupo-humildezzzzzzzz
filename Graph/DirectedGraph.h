@@ -10,7 +10,7 @@ class DirectedGraph : public Graph<TV, TE>{
         Vertex<TV, TE>* vertice = new Vertex<TV, TE>;
         vertice->data=vertex;
         vertexes[id]=vertice;
-    };   
+    };  
     bool createEdge(string id1, string id2, TE w) = 0;     
     bool deleteVertex(string id) = 0;     
     bool deleteEdge(string id) = 0;   
