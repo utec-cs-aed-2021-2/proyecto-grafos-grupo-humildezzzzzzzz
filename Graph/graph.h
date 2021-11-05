@@ -45,7 +45,7 @@ public:
     virtual bool isDense(float threshold = 0.5) = 0;
     virtual bool isConnected()= 0;
     virtual bool isStronglyConnected() throw();
-    virtual bool empty();
+    virtual bool empty()=0;
     virtual void clear()= 0;
     virtual void displayVertex(string id)= 0;
     virtual bool findById(string id) = 0;
