@@ -2,6 +2,8 @@
 #define UNDIRECTEDGRAPH_H
 
 #include "graph.h"
+#include <set>
+#include <stack>
 
 template<typename TV, typename TE>
 Vertex<TV,TE> llegadas(string id, list<Edge<TV, TE>*> arista){
@@ -151,8 +153,37 @@ bool UnDirectedGraph<TV,TE>::isDense(float threshold = 0.5){ return this->densit
 
 template<typename TV, typename TE>
 bool UnDirectedGraph<TV,TE>::isConnected(){
-    std::unordered_map<string, Vertex<TV, TE>*>  visited;
+    std::set<string> visitados;
+    std::stack<Vertex<TV,TE>*> st;
+
+    string primero = (*this->vertexes.begin()).first;
+    visitados.insert(primero); //insertas el primer nodo
+    auto aristas = (*this->vertexes.begin()).second->edges; //escojes sus aristas
+
+    for(auto i:aristas){ // recorres sus aristas
+        Vertex<TV,TE>* adj = i->vertexes[1]; //tomas vertice de llegada
+        if(visitados.find(adj->id) == visitados.end()){ //verificas si esta en la lista de visitados
+            st.push(adj); //si no estas, lo pusheas al stack
+        }
+    }
     
+    while(!st.empty()){
+        Vertex<TV,TE>* top = st.top(); //escojes el top de la pila 
+        st.pop(); //lo eliminas
+        visitados.insert(top->id); //lo insertas en los visitados
+
+        for(auto i: top->edges){ //recorres sus aristas
+            Vertex<TV,TE>* adj = i->vertexes[1]; // tomas sus vertices de llegada
+            if(visitados.find(adj->id) == visitados.end()){ //si no fue visitado
+                st.push(adj); //lo pusheas en la pila
+            }
+        }
+    }
+
+    if(visitados.size() == this->vertexes.size()){
+        return true;
+    }
+    return false;
 }
 
 template<typename TV, typename TE>

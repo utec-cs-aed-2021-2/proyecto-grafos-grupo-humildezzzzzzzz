@@ -5,6 +5,8 @@
 
 template<typename TV, typename TE>
 class DirectedGraph : public Graph<TV, TE>{
+    private:
+    int nro_arsistas;
     public:
 
     DirectedGraph() = default;
@@ -13,21 +15,21 @@ class DirectedGraph : public Graph<TV, TE>{
     }
 
     ~DirectedGraph();
-    bool insertVertex(string id, TV vertex);  
-    bool createEdge(string id1, string id2, TE w);
-    bool deleteVertex(string id);
-    bool deleteEdges(string id);
-    bool deleteEdge(string id1, string id2);
-    TE &operator()(string start, string end);
-    float density();
-    bool isDense(float threshold = 0.5);
+    bool insertVertex(string id, TV vertex); //LISTO 
+    bool createEdge(string id1, string id2, TE w); //LISTO
+    bool deleteVertex(string id); //LISTO
+    bool deleteEdges(string id); //LISTO
+    bool deleteEdge(string id1, string id2); //LISTO
+    TE &operator()(string start, string end); //LISTO
+    float density(); //LISTO
+    bool isDense(float threshold = 0.5); //LISTO
     bool isConnected();
     bool isStronglyConnected();
-    bool empty();
-    void clear();
-    void displayVertex(string id);
-    bool findById(string id);
-    void display();
+    bool empty(); //LISTO
+    void clear(); //LISTO
+    void displayVertex(string id); //PREGUNTAR AL PROFESOR 
+    bool findById(string id); //LISTO
+    void display(); //LISTO
 };
 
 template<typename TV, typename TE>
@@ -37,6 +39,7 @@ bool DirectedGraph<TV,TE>::insertVertex(string id, TV vertex){
     }
     Vertex<TV, TE>* vertice = new Vertex<TV, TE>;
     vertice->data=vertex;
+    vertice->id = id;
     vertexes[id]=vertice;
     return true;
 }
@@ -64,6 +67,18 @@ bool DirectedGraph<TV,TE>:: deleteVertex(string id){
     }
 
     deleteEdges(id);
+    for(auto i = this->vertexes.begin(); i != this->vertexes.end(); i++){ //Iteramos todos los vertices menos el que va a eliminar
+        if((*i).second != this->vertexes[id]){
+            auto aristas = (*i).second->edges;
+            for(auto j = aristas.begin(); j != aristas.end(); j++){//aristas de dichos vertices que no va a eliminar
+                if((*j)->vertexes[1] == this->vertexes[id]){
+                    aristas.erase(j);
+                    nro_arsistas-- //ATENCION: No estoy seguro si se deba poner esto pero porsiaca xd
+                    break;
+                }
+            }
+        }
+    }
     this->vertexes.erase(id);
     return true;
 };
@@ -75,19 +90,9 @@ bool DirectedGraph<TV,TE>:: deleteEdges(string id){
     }
 
     auto aristas_ady = &(this->vertexes[id])->edges; //solo tomo la lista de aristas para ese vertice
-
     while(!aristas_ady->empty()){
-        auto inicio = inicios(id,aristas_ady); //primer vertice de la primera arista
-        auto llegada = llegadas(id,aristas_ady)//vertice de llegada de la primera arista
-
-        for(auto i = (llegada->edges).begin(); i != (llegada->edges).end(); i++){ //recorro las demas aristas adyacentes al nodo de llegada
-            if((*i)->vertexes[1] == inicio){ //si su vertice de llegada es igual al primer vertice de nuestra arista a eliminar
-                (llegada->edges).erase(i); //borro la arista
-                nro_aristas--;
-                break;
-            }
-        }
-        aristas_ady->pop_front(); //eliminamos la primera arista de nuestra lista de aristas adyacentes
+        nro_arsistas--;
+        aristas_ady->pop_front();
     }
     return true;
 };
@@ -99,21 +104,37 @@ bool DirectedGraph<TV,TE>::deleteEdge(string id1, string id2){
     }
 
     auto aristas_ady_id1 = &(this->vertexes[id1])->edges;
-    auto llegada1 = llegadas(id1,aristas_ady_id1)
     for(auto i = aristas_ady_id1.begin(); i != aristas_ady_id1.end(); i++){
-        if(llegada1->id == id2){
+        if(((*i)->vertexes[1])->id == id2){
             aristas_ady_id1.erase(i);
+            nro_aristas--;
+            return true;
         }
     }
-    nro_aristas--;
-    return true;
+    return false;
 };
 
 template<typename TV, typename TE>
-TE& DirectedGraph<TV,TE>::operator()(string start, string end); // Creo que declare esto mal xd revisar
+TE& DirectedGraph<TV,TE>::operator()(string start, string end){
+    if(!findById(start)){
+        cout<<"No existe vertice"<<endl;
+        return -1;
+    }
+    auto aristas = this->vertexes[start]->edges;
+    for(auto i:aristas){
+        if(i->vertexes[0] == this->vertexes[end] || i->vertexes[1] == this->vertexes[end]){
+            return i->weight;
+        }
+    }
+    cout<<"La conexion no existe"<<endl;
+    return -1;
+}
 
 template<typename TV, typename TE>
-    float DirectedGraph<TV,TE>::density();
+float DirectedGraph<TV,TE>::density(){
+    int vertices = this->vertexes.size();
+    return 2 * nro_arsistas / ((float) vertices * (V - 1));
+}
 
 template<typename TV, typename TE>
     bool DirectedGraph<TV,TE>::isDense(float threshold = 0.5){ return this->density()>threshold;};
@@ -125,39 +146,39 @@ template<typename TV, typename TE>
     bool DirectedGraph<TV,TE>::isStronglyConnected();
 
 template<typename TV, typename TE>
-    bool DirectedGraph<TV,TE>::empty(){
-          return this->vertexes.empty();
-    };
+bool DirectedGraph<TV,TE>::empty(){
+    return this->vertexes.empty();
+};
 
 template<typename TV, typename TE>
-    void DirectedGraph<TV,TE>::clear(){
-        while(!this->vertexes.empty()){
+void DirectedGraph<TV,TE>::clear(){
+    while(!this->vertexes.empty()){
         auto i = *this->vertexes.begin();
         deleteVertex(i.first);
     }
-    };
+};
 
 template<typename TV, typename TE>
-    void DirectedGraph<TV,TE>::displayVertex(string id){
-        std::cout<<this->vertexes[id]->data<<std::endl;
-    };
+void DirectedGraph<TV,TE>::displayVertex(string id){
+    std::cout<<this->vertexes[id]->data<<std::endl;
+};
 
 template<typename TV, typename TE>
-    bool DirectedGraph<TV,TE>::findById(string id){
-        return this->vertexes.count(id);
-    };
+bool DirectedGraph<TV,TE>::findById(string id){
+    return this->vertexes.count(id);
+};
 
 template<typename TV, typename TE>
     void DirectedGraph<TV,TE>::display(){
         vector<pair<string,string>> visited;
 
     for(auto i:this->vertexes){
-        string id = i.first;
-        auto aristas = (this->vertexes[id])->edges;
+        string id = i.first; //PRIMER VERTICE DE INICIO
+        auto aristas = (this->vertexes[id])->edges; //sus aristas adyacentes
 
-        for(auto j:aristas){
-            string ids = (j->vertexes[1])->id
-            bool visitado = false;
+        for(auto j:aristas){ //recorres sus aristas
+            string ids = (j->vertexes[1])->id //almacenas sus vertices de llegada
+            bool visitado = false; 
             for(auto &k:visited){
                 if((k.first == id && k.second == ids) || (k.first == ids && k.second == id)){
                     visitado = true;
