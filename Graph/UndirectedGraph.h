@@ -27,29 +27,30 @@ Vertex<TV,TE> inicios(string id, list<Edge<TV,TE>*> arista){
 
 template<typename TV, typename TE>
 class UnDirectedGraph : public Graph<TV, TE>{
-
+private:
     int nro_aristas = 0;
-
-    UnDirectedGraph() = default;
-    UnDirectedGraph(string id, TV vertex){
+public:
+    UnDirectedGraph() = default; //LISTO
+    UnDirectedGraph(string id, TV vertex){ //LISTO
         this->insertVertex(id,vertex)
     }
+    ~UnDirectedGraph();
 
-    bool insertVertex(string id, TV vertex);
-    bool createEdge(string id1, string id2, TE w);
-    bool deleteVertex(string id);
-    bool deleteEdges(string id);
-    bool deleteEdge(string id1, string id2);
-    TE &operator()(string start, string end);
-    float density();
-    bool isDense(float threshold = 0.5);
-    bool isConnected();
-    bool isStronglyConnected();
-    bool empty();
-    void clear();
-    void displayVertex(string id);
-    bool findById(string id);
-    void display();
+    bool insertVertex(string id, TV vertex); //LISTO
+    bool createEdge(string id1, string id2, TE w); //LISTO
+    bool deleteVertex(string id); //LISTO
+    bool deleteEdges(string id); //LISTO
+    bool deleteEdge(string id1, string id2); //LISTO
+    TE &operator()(string start, string end); //LISTO
+    float density(); //LISTO
+    bool isDense(float threshold = 0.5); //LISTO
+    bool isConnected(); 
+    bool isStronglyConnected(); //LISTO
+    bool empty(); //LISTO
+    void clear(); //LISTO
+    void displayVertex(string id); //LISTO
+    bool findById(string id); //LISTO
+    void display(); //LISTO
 };
 
 template<typename TV, typename TE>
@@ -143,14 +144,8 @@ bool UnDirectedGraph<TV,TE>::deleteEdge(string id1, string id2){
 
 template<typename TV, typename TE>
 float UnDirectedGraph<TV,TE>::density(){
-    std::list<Edge<TV, TE>*> aristas;
-    for(auto a =begin(this->vertexes); a!=end(this->vertexes); a++){
-        //TO DO
-        //Iterar sobre todos los vertices y obtener todas las aristas
-    }
-    int num_aristas=aristas.size();
-    int num_vertices=this->vertexes.size()
-    return 2*num_aristas/(num_vertices*(num_vertices-1))
+    int Vertices = this->vertexes.size();
+    return 2 * this->nro_aristas / ((float) V * (V - 1));
 }
 
 template<typename TV, typename TE>
@@ -158,7 +153,7 @@ bool UnDirectedGraph<TV,TE>::isDense(float threshold = 0.5){ return this->densit
 
 template<typename TV, typename TE>
 bool UnDirectedGraph<TV,TE>::isConnected(){
-     std::unordered_map<string, Vertex<TV, TE>*>  visited;
+    std::unordered_map<string, Vertex<TV, TE>*>  visited;
     
 }
 
@@ -174,10 +169,10 @@ bool UnDirectedGraph<TV,TE>::empty(){
 
 template<typename TV, typename TE>
 void UnDirectedGraph<TV,TE>::clear(){
-    for(auto a=begin(this->vertexes); a!=end(this->vertexes); a++){
-        //Clearear vector aristas de cada vertice.
+    while(!this->vertexes.empty()){
+        auto i = *this->vertexes.begin();
+        deleteVertex(i.first);
     }
-    this->vertexes.clear();
 }
 
 template<typename TV, typename TE>
@@ -192,10 +187,50 @@ bool UnDirectedGraph<TV,TE>::findById(string id){
 
 template<typename TV, typename TE>
 void UnDirectedGraph<TV,TE>::display(){
-    for(auto& it: vertexes){
-        //Imprimir la data de todos los vértices.
-        std::cout<<(it.second)->data<<std::endl;
+    vector<pair<string,string>> visited;
+
+    for(auto i:this->vertexes){
+        string id = i.first;
+        auto aristas = (this->vertexes[id])->edges;
+
+        for(auto j:aristas){
+            string ids = (j->vertexes[1])->id
+            bool visitado = false;
+            for(auto &k:visited){
+                if((k.first == id && k.second == ids) || (k.first == ids && k.second == id)){
+                    visitado = true;
+                    break;
+                }
+            }
+
+            if(!visitado){
+                visited.push_back(make_pair(id,ids));
+                std::cout<<"peso del vertice "<<id<<" al vertice "<<ids<<" es "<< (*j)->weight<<endl;
+            }
+        }
     }
-    
+}
+
+template<typename TV,typename TE>
+TE& UnDirectedGraph<TV,TE>::operator()(string start, string end){
+    if(!findById(start)){
+        std::cout<<"No existe el vertice"<<endl;
+        return -1;
+    }
+    auto aristas = (this->vertex[start])->edges; //aristas de nuestro vertice de inicio
+    for(auto i: aristas){
+        if(i->vertexes[0] == this->vertexes[end] || i->vertexes[1] == this->vertexes[end]){
+            return i->weight
+        }
+    }
+    std::cout<<"No existe la conexion"<<endl;
+    return -1;
+}
+
+template<typename TV,typename TE>
+UnDirectedGraph<TV,TE>::~UnDirectedGraph(){
+    while(this->vertexes.size() != 0){
+        deleteVertex((*this->vertexes.begin()).first);
+    }
 }
 #endif
