@@ -5,23 +5,21 @@
 
 template<typename TV, typename TE>
 Vertex<TV,TE> llegadas(string id, list<Edge<TV, TE>*> arista){
-    auto todos_aristas = &(this->vertexes[id])->edges;
-    if(id == ((*todos_aristas->begin())->vertexes[0])->id){
-        return (*todos_aristas->begin())->vertexes[1]
+    if(id == ((*arista->begin())->vertexes[0])->id){
+        return (*arista->begin())->vertexes[1]
     }
     else{
-        return (*todos_aristas->begin())->vertexes[0]
+        return (*arista->begin())->vertexes[0]
     }
 }
 
 template<typename TV, typename TE>
 Vertex<TV,TE> inicios(string id, list<Edge<TV,TE>*> arista){
-    auto todos_aristas = &(this->vertexes[id])->edges;
-    if(id != ((*todos_aristas->begin())->vertexes[1])->id){
-        return (*todos_aristas->begin())->vertexes[0]
+    if(id != ((*arista->begin())->vertexes[1])->id){
+        return (*arista->begin())->vertexes[0]
     }
     else{
-        return (*todos_aristas->begin())->vertexes[1]
+        return (*arista->begin())->vertexes[1]
     }
 }
 
