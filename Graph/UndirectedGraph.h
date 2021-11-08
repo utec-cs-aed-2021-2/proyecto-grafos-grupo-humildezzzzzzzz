@@ -33,6 +33,7 @@ public:
     void display(); //LISTO
     int size(){return this->vertexes.size();};
     int count(string id){return this->vertexes.count(id);};
+    void printeo();
 };
 
 template<typename TV, typename TE>
@@ -56,13 +57,14 @@ bool UnDirectedGraph<TV,TE>::createEdge(string id1, string id2, TE w){
         return false;
     }
     auto* new_edge = new Edge<TV,TE>;
+    auto* new_edge2 = new Edge<TV,TE>;
     new_edge->weight = w;
     new_edge->vertexes=this->vertexes[id2];
+     new_edge2->weight = w;
+    new_edge2->vertexes=this->vertexes[id1];
     this->vertexes[id1]->edges.push_back(new_edge);
-
-    new_edge->vertexes = this->vertexes[id1];
     
-    this->vertexes[id2]->edges.push_back(new_edge);
+    this->vertexes[id2]->edges.push_back(new_edge2);
 
     nro_aristas++;
 
@@ -76,6 +78,22 @@ bool UnDirectedGraph<TV,TE>::deleteEdges(string id){
     }
 
     auto aristas_ady = (this->vertexes[id])->edges; //solo tomo la lista de aristas para ese vertice
+     for(auto i=aristas_ady.begin(); i!=aristas_ady.end(); i++){
+         auto ady2 =&(*i)->vertexes->edges;
+         for(auto j=ady2->begin(); j!=ady2->end(); j++){
+             if(((*j)->vertexes)->id == id){
+                ady2->erase(j);
+                break;
+             }
+         }
+
+    }
+    nro_aristas=nro_aristas-this->vertexes[id]->edges.size();
+    this->vertexes[id]->edges.clear();
+
+   
+
+    return true;
 /*
     while(!aristas_ady.empty()){
         auto inicio = inicios(id,aristas_ady); //primer vertice de la primera arista
@@ -91,7 +109,6 @@ bool UnDirectedGraph<TV,TE>::deleteEdges(string id){
         aristas_ady.pop_front(); //eliminamos la primera arista de nuestra lista de aristas adyacentes
     }
     */
-    return true;
 }
 
 template<typename TV, typename TE>
@@ -112,6 +129,23 @@ bool UnDirectedGraph<TV,TE>::deleteEdge(string id1, string id2){
     }
 
     auto aristas_ady_id1 = &(this->vertexes[id1])->edges;
+    auto aristas_ady_id2 = &(this->vertexes[id2])->edges;
+    for(auto i = aristas_ady_id1->begin(); i != aristas_ady_id1->end(); i++){
+        if(((*i)->vertexes)->id == id2){
+             aristas_ady_id1->erase(i);
+             break;
+        }
+    }
+    
+     for(auto i = aristas_ady_id2->begin(); i != aristas_ady_id2->end(); i++){
+        if(((*i)->vertexes)->id == id1){
+            aristas_ady_id2->erase(i);
+            break;
+        }
+    }
+    nro_aristas--;
+    return true;
+
     /*
     auto llegada1 = llegadas(id1,aristas_ady_id1);
     for(auto i = aristas_ady_id1.begin(); i != aristas_ady_id1.end(); i++){
@@ -128,8 +162,7 @@ bool UnDirectedGraph<TV,TE>::deleteEdge(string id1, string id2){
         }
     }
     */
-    nro_aristas--;
-    return true;
+   
 }
 
 template<typename TV, typename TE>
@@ -143,37 +176,26 @@ bool UnDirectedGraph<TV,TE>::isDense(float threshold){ return this->density()>th
 
 template<typename TV, typename TE>
 bool UnDirectedGraph<TV,TE>::isConnected(){
-    std::set<string> visitados;
-    std::stack<Vertex<TV,TE>*> st;
-
-    string primero = (*this->vertexes.begin()).first;
-    visitados.insert(primero); //insertas el primer nodo
-    auto aristas = (*this->vertexes.begin()).second->edges; //escojes sus aristas
-
-    for(auto i:aristas){ // recorres sus aristas
-        Vertex<TV,TE>* adj = i->vertexes; //tomas vertice de llegada
-        if(visitados.find(adj->id) == visitados.end()){ //verificas si esta en la lista de visitados
-            st.push(adj); //si no estas, lo pusheas al stack
-        }
-    }
-    
-    while(!st.empty()){
-        Vertex<TV,TE>* top = st.top(); //escojes el top de la pila 
-        st.pop(); //lo eliminas
-        visitados.insert(top->id); //lo insertas en los visitados
-
-        for(auto i: top->edges){ //recorres sus aristas
-            Vertex<TV,TE>* adj = i->vertexes; // tomas sus vertices de llegada
-            if(visitados.find(adj->id) == visitados.end()){ //si no fue visitado
-                st.push(adj); //lo pusheas en la pila
+    std::set<pair<string,string>> caminos;
+        std::set<string> visitados;
+        std::stack<string> st;
+        string primero;
+            primero = (*(this->vertexes.begin())).first;
+            visitados.insert(primero); //insertas el primer nodo
+            st.push(primero);
+            while(!st.empty()){
+                auto actual = st.top(); //escojes el top de la pila
+                st.pop(); //lo eliminas
+                visitados.insert(actual); //lo insertas en los visitados
+                for(auto &i: this->vertexes[actual]->edges){ //recorres sus aristas
+                    if(visitados.count(i->vertexes->id) == 0){ //si no fue visitado
+                        caminos.insert({primero,i->vertexes->id});
+                        st.push(i->vertexes->id); //lo pusheas en la pila
+                    }
+                }
             }
-        }
-    }
+           return  visitados.size()==this->vertexes.size();
 
-    if(visitados.size() == this->vertexes.size()){
-        return true;
-    }
-    return false;
 }
 
 template<typename TV, typename TE>
@@ -206,27 +228,10 @@ bool UnDirectedGraph<TV,TE>::findById(string id){
 
 template<typename TV, typename TE>
 void UnDirectedGraph<TV,TE>::display(){
-    vector<pair<string,string>> visited;
-
-    for(auto i:this->vertexes){
-        string id = i.first;
-        auto aristas = (this->vertexes[id])->edges;
-
-        for(auto j:aristas){
-            string ids = (j->vertexes)->id;
-            bool visitado = false;
-            for(auto &k:visited){
-                if((k.first == id && k.second == ids) || (k.first == ids && k.second == id)){
-                    visitado = true;
-                    break;
-                }
-            }
-
-            if(!visitado){
-                visited.push_back(make_pair(id,ids));
-                std::cout<<"peso del vertice "<<id<<" al vertice "<<ids<<" es "<< j->weight<<endl;
-            }
-        }
+    for(auto i = this->vertexes.begin(); i != this->vertexes.end(); i++) { //Iteramos todos los vertices menos el que va a elimina
+        cout<<"Del Nodo "<<(*i).first<<" se puede visitar " <<endl;
+        for(auto &x:(*i).second->edges) cout<<x->vertexes->id<<" con peso "<<x->weight<<", ";
+        cout<<endl;
     }
 }
 
@@ -234,7 +239,7 @@ template<typename TV,typename TE>
 TE& UnDirectedGraph<TV,TE>::operator()(string start, string end){
     if(!findById(start)){
         std::cout<<"No existe el vertice"<<endl;
-        return *(new int(0));
+        return *(new TE(0));
     }
     auto aristas = (this->vertexes[start])->edges; //aristas de nuestro vertice de inicio
     for(auto i: aristas){
@@ -243,7 +248,7 @@ TE& UnDirectedGraph<TV,TE>::operator()(string start, string end){
         }
     }
     std::cout<<"No existe la conexion"<<endl;
-    return *(new int(0));
+    return *(new TE(0));
 }
 
 template<typename TV,typename TE>
@@ -252,4 +257,13 @@ UnDirectedGraph<TV,TE>::~UnDirectedGraph(){
         deleteVertex(this->vertexes.begin()->first);
     }
 }
+
+template<typename TV, typename TE>
+void UnDirectedGraph<TV,TE>:: printeo(){
+    for(auto i = this->vertexes.begin(); i != this->vertexes.end(); i++) { //Iteramos todos los vertices menos el que va a elimina
+        cout<<"from "<<(*i).first<<endl;
+        for(auto &x:(*i).second->edges) cout<<x->vertexes->id<<' ';
+        cout<<endl;
+    }
+};
 #endif
