@@ -7,82 +7,62 @@ template<typename TV,typename TE>
 class dfs{
 private:
     DirectedGraph<TV,TE>* Grafo;
+
 public:
     dfs() = default;
 
-    dfs(UnDirectedGraph<TV,TE>* &graph, string vertex_id){
-        std::unordered_set<string> visitados;
-        std::stack<pair<string, Vertex<TV,TE>*>> st;
-        string primero;
+    dfs(UnDirectedGraph<TV,TE>* graph, string vertex_id){
+        std::set<string> visitados;
+        std::stack<Vertex<TV,TE>*> st;
+        auto temp = *(graph->get_vertexes());
+        auto primero=temp[vertex_id];
 
-        auto temp = graph->vertexes
-        auto aux = graph->vertexes[vertex_id];
         Grafo = new DirectedGraph<TV,TE>;
-        Grafo->insertVertex(vertex_id,axu->data);
+        Grafo->insertVertex(vertex_id,primero->data);
 
-        visitados.insert(vertex_id);
-        st.push(make_pair(vertex_id,((temp.second)->edges)->vertexes));
-
+        st.push(primero);
 
         while(!st.empty()){
-            pair<string,Vertex<TV,TE>*> actual = st.top();
+            auto actual = st.top();
             st.pop();
-            string id;
-            Vertex<TV,TE>* to_insert;
-            id = actual.first;
-            to_insert = actual.second;
-
-            if(visitados.find(to_insert->id) == visitados.end()){
-                visitados.insert(to_insert->id);
-                Grafo->insertVertex(to_insert->id,to_insert->data);
-                Grafo->insertEdge(id,to_insert->id,1)
-            }
-
-            for(auto &a : to_insert->edges){
-                if(visitados.find(a->vertexes->id) == visitados.end()){
-                    st.push(make_pair(to_insert->id,a->vertexes))
+            visitados.insert(actual->id);
+            for(auto &a : temp[actual->id]->edges){
+                if(visitados.count(a->vertexes->id)==0){
+                    Grafo->insertVertex(a->vertexes->id,a->vertexes->data);
+                    Grafo->createEdge(actual->id,a->vertexes->id,a->weight);
+                    st.push(a->vertexes);
                 }
             }
         }
     }
 
-    dfs(DirectedGraph<TV,TE>* &graph, string vertex_id){
-        std::unordered_set<string> visitados;
-        std::stack<pair<string, Vertex<TV,TE>*>> st;
-        string primero;
+    dfs(DirectedGraph<TV,TE>* graph, string vertex_id){
+        std::set<string> visitados;
+        std::stack<Vertex<TV,TE>*> st;
+        auto temp = *(graph->get_vertexes());
+        auto primero=temp[vertex_id];
 
-        auto temp = graph->vertexes
-        auto aux = graph->vertexes[vertex_id];
         Grafo = new DirectedGraph<TV,TE>;
-        Grafo->insertVertex(vertex_id,axu->data);
+        Grafo->insertVertex(vertex_id,primero->data);
 
-        visitados.insert(vertex_id);
-        st.push(make_pair(vertex_id,((temp.second)->edges)->vertexes));
-
+        st.push(primero);
 
         while(!st.empty()){
-            pair<string,Vertex<TV,TE>*> actual = st.top();
+            auto actual = st.top();
             st.pop();
-            string id;
-            Vertex<TV,TE>* to_insert;
-            id = actual.first;
-            to_insert = actual.second;
-
-            if(visitados.find(to_insert->id) == visitados.end()){
-                visitados.insert(to_insert->id);
-                Grafo->insertVertex(to_insert->id,to_insert->data);
-                Grafo->insertEdge(id,to_insert->id,1)
-            }
-
-            for(auto &a : to_insert->edges){
-                if(visitados.find(a->vertexes->id) == visitados.end()){
-                    st.push(make_pair(to_insert->id,a->vertexes))
+            visitados.insert(actual->id);
+            for(auto &a : temp[actual->id]->edges){
+                if(visitados.count(a->vertexes->id)==0){
+                    Grafo->insertVertex(a->vertexes->id,a->vertexes->data);
+                    Grafo->createEdge(actual->id,a->vertexes->id,a->weight);
+                    st.push(a->vertexes);
                 }
             }
         }
-    }    
+    }
 
     DirectedGraph<TV,TE>* get_grafo(){
         return Grafo;
     }
+
 };
