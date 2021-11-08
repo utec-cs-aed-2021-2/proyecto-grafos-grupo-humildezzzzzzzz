@@ -3,6 +3,7 @@
 
 #include "graph.h"
 
+
 template<typename TV, typename TE>
 class DirectedGraph : public Graph<TV, TE>{
     private:
@@ -140,10 +141,82 @@ template<typename TV, typename TE>
     bool DirectedGraph<TV,TE>::isDense(float threshold = 0.5){ return this->density()>threshold;};
 
 template<typename TV, typename TE>
-    bool DirectedGraph<TV,TE>::isConnected();
+    bool DirectedGraph<TV,TE>::isConnected(){
+     std::set<string> visitados;
+    std::stack<Vertex<TV,TE>*> st;
+    string primero;
+    for(auto& a:this->vertexes){
+    primero = a.first;
+    visitados.insert(primero); //insertas el primer nodo
+    auto aristas = (*this->vertexes.begin()).second->edges; //escojes sus aristas
+
+    for(auto i:aristas){ // recorres sus aristas
+        Vertex<TV,TE>* adj = i->vertexes[1]; //tomas vertice de llegada
+        if(visitados.find(adj->id) == visitados.end()){ //verificas si esta en la lista de visitados
+            st.push(adj); //si no estas, lo pusheas al stack
+        }
+    }
+    
+    while(!st.empty()){
+        Vertex<TV,TE>* top = st.top(); //escojes el top de la pila 
+        st.pop(); //lo eliminas
+        visitados.insert(top->id); //lo insertas en los visitados
+
+        for(auto i: top->edges){ //recorres sus aristas
+            Vertex<TV,TE>* adj = i->vertexes[1]; // tomas sus vertices de llegada
+            if(visitados.find(adj->id) == visitados.end()){ //si no fue visitado
+                st.push(adj); //lo pusheas en la pila
+            }
+        }
+    }
+    
+    if(visitados.size() != this->vertexes.size()){
+        return false;
+    }
+    visitados.clear();
+    };
+    
+    return true;
+    }
 
 template<typename TV, typename TE>
-    bool DirectedGraph<TV,TE>::isStronglyConnected();
+    bool DirectedGraph<TV,TE>::isStronglyConnected(){
+         std::set<string> visitados;
+    std::stack<Vertex<TV,TE>*> st;
+    string primero;
+    for(auto& a:this->vertexes){
+    primero = a.first;
+    visitados.insert(primero); //insertas el primer nodo
+    auto aristas = (*this->vertexes.begin()).second->edges; //escojes sus aristas
+
+    for(auto i:aristas){ // recorres sus aristas
+        Vertex<TV,TE>* adj = i->vertexes[1]; //tomas vertice de llegada
+        if(visitados.find(adj->id) == visitados.end()){ //verificas si esta en la lista de visitados
+            st.push(adj); //si no estas, lo pusheas al stack
+        }
+    }
+    
+    while(!st.empty()){
+        Vertex<TV,TE>* top = st.top(); //escojes el top de la pila 
+        st.pop(); //lo eliminas
+        visitados.insert(top->id); //lo insertas en los visitados
+
+        for(auto i: top->edges){ //recorres sus aristas
+            Vertex<TV,TE>* adj = i->vertexes[1]; // tomas sus vertices de llegada
+            if(visitados.find(adj->id) == visitados.end()){ //si no fue visitado
+                st.push(adj); //lo pusheas en la pila
+            }
+        }
+    }
+
+    if(visitados.size() != this->vertexes.size()){
+        return false;
+    }
+    visitados.clear();
+    };
+    
+    return true;
+    };
 
 template<typename TV, typename TE>
 bool DirectedGraph<TV,TE>::empty(){

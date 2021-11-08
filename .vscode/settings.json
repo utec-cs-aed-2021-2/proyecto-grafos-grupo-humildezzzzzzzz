@@ -45,6 +45,10 @@
         "xlocinfo": "cpp",
         "xlocnum": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "deque": "cpp",
+        "set": "cpp",
+        "stack": "cpp",
+        "xtree": "cpp"
     }
 }
