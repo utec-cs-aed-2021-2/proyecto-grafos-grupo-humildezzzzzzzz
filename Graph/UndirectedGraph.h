@@ -34,6 +34,7 @@ public:
     int size(){return this->vertexes.size();};
     int count(string id){return this->vertexes.count(id);};
     void printeo();
+    std::unordered_map<string,Vertex<TV,TE>*>* get_vertexes();
 };
 
 template<typename TV, typename TE>
@@ -266,4 +267,9 @@ void UnDirectedGraph<TV,TE>:: printeo(){
         cout<<endl;
     }
 };
+
+template<typename TV, typename TE>
+std::unordered_map<string,Vertex<TV,TE>*>* UnDirectedGraph<TV,TE>::get_vertexes(){
+    return &(this->vertexes);
+}
 #endif

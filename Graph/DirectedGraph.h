@@ -2,7 +2,8 @@
 #define NONDIRECTEDGRAPH_H
 
 #include "graph.h"
-
+#include <stack>
+#include <set>
 
 template<typename TV, typename TE>
 class DirectedGraph : public Graph<TV, TE>{
@@ -32,6 +33,7 @@ class DirectedGraph : public Graph<TV, TE>{
     void clear(); //LISTO
     void displayVertex(string id); //PREGUNTAR AL PROFESOR 
     void display(); //LISTO
+    std::unordered_map<string,Vertex<TV,TE>*>* get_vertexes();
 
 };
 
@@ -86,8 +88,8 @@ bool DirectedGraph<TV,TE>:: deleteEdges(string id){
 template<typename TV, typename TE>
 void DirectedGraph<TV,TE>:: printeo(){
     for(auto i = this->vertexes.begin(); i != this->vertexes.end(); i++) { //Iteramos todos los vertices menos el que va a elimina
-        cout<<"from "<<(*i).first<<endl;
-        for(auto &x:(*i).second->edges) cout<<x->vertexes->id<<' ';
+        cout<<"from "<<(*i).first<<" to ";
+        for(auto &x:(*i).second->edges) cout<<x->vertexes->id<<" with "<<x->weight;
         cout<<endl;
     }
 };
@@ -241,6 +243,11 @@ DirectedGraph<TV,TE>::~DirectedGraph(){
     while(this->vertexes.size() != 0){
         deleteVertex((*this->vertexes.begin()).first);
     }
+}
+
+template<typename TV, typename TE>
+unordered_map<string,Vertex<TV,TE>*>* DirectedGraph<TV,TE>::get_vertexes(){
+    return &(this->vertexes);
 }
 
 #endif
