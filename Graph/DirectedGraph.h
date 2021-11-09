@@ -2,8 +2,7 @@
 #define NONDIRECTEDGRAPH_H
 
 #include "graph.h"
-#include <stack>
-#include <set>
+
 
 template<typename TV, typename TE>
 class DirectedGraph : public Graph<TV, TE>{
@@ -33,8 +32,12 @@ class DirectedGraph : public Graph<TV, TE>{
     void clear(); //LISTO
     void displayVertex(string id); //PREGUNTAR AL PROFESOR 
     void display(); //LISTO
-    std::unordered_map<string,Vertex<TV,TE>*>* get_vertexes();
+    unordered_map<string, Vertex<TV, TE>*>*  get_vertexes();
+};
 
+template<typename TV,typename TE>
+unordered_map<string,Vertex<TV,TE>*>* DirectedGraph<TV,TE>::get_vertexes(){
+    return &(this->vertexes);
 };
 
 template<typename TV, typename TE>
@@ -86,10 +89,12 @@ bool DirectedGraph<TV,TE>:: deleteEdges(string id){
 };
 
 template<typename TV, typename TE>
-void DirectedGraph<TV,TE>:: printeo(){
+void DirectedGraph<TV,TE>:: display(){
     for(auto i = this->vertexes.begin(); i != this->vertexes.end(); i++) { //Iteramos todos los vertices menos el que va a elimina
-        cout<<"from "<<(*i).first<<" to ";
-        for(auto &x:(*i).second->edges) cout<<x->vertexes->id<<" with "<<x->weight;
+        cout<<"From "<<(*i).first<<endl;
+        for(auto &x:(*i).second->edges){
+            cout<<"To "<<x->vertexes->id<<" with "<<x->weight<<endl;
+        }
         cout<<endl;
     }
 };
@@ -215,39 +220,11 @@ void DirectedGraph<TV,TE>::displayVertex(string id){
     std::cout<<this->vertexes[id]->data<<std::endl;
 };
 
-
-template<typename TV, typename TE>
-    void DirectedGraph<TV,TE>::display(){
-        std::set<string> visitados;
-        std::stack<string> st;
-        string primero;
-        primero = (this->vertexes.begin())->first;
-        visitados.insert(primero); //insertas el primer nodo
-        st.push(primero);
-        while(!st.empty()){
-            auto actual = st.top(); //escojes el top de la pila
-            st.pop(); //lo eliminas
-            visitados.insert(actual); //lo insertas en los visitados
-            for(auto &i: this->vertexes[actual]->edges){ //recorres sus aristas
-                if(visitados.count(i->vertexes->id) == 0){ //si no fue visitado
-                    cout<<"from "<<actual<<" to "<<i->vertexes->id<<" with "<<i->weight<<endl;
-//                    cout<<i->vertexes->id<<' '<<i->weight<<endl;
-                    st.push(i->vertexes->id); //lo pusheas en la pila
-                }
-            }
-        }
-    };
-
 template<typename TV, typename TE>
 DirectedGraph<TV,TE>::~DirectedGraph(){
     while(this->vertexes.size() != 0){
         deleteVertex((*this->vertexes.begin()).first);
     }
-}
-
-template<typename TV, typename TE>
-unordered_map<string,Vertex<TV,TE>*>* DirectedGraph<TV,TE>::get_vertexes(){
-    return &(this->vertexes);
 }
 
 #endif
