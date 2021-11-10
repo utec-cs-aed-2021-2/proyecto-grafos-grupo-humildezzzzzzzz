@@ -21,16 +21,17 @@ public:
         Grafo->insertVertex(vertex_id,primero->data);
 
         q.push(primero);
-
+        visitados.insert(primero->id);
+        
         while(!q.empty()){
             auto actual = q.front();
             q.pop();
-            visitados.insert(actual->id);
             for(auto &a : temp[actual->id]->edges){
                 if(visitados.count(a->vertexes->id)==0){
                     Grafo->insertVertex(a->vertexes->id,a->vertexes->data);
                     Grafo->createEdge(actual->id,a->vertexes->id,a->weight);
                     q.push(a->vertexes);
+                    visitados.insert(a->vertexes->id);
                 }
             }
         }

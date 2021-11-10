@@ -4,6 +4,7 @@
 #include "Graph/DirectedGraph.h"
 #include "Graph/Algorithms/dfs.h"
 #include "Graph/Algorithms/bfs.h"
+#include "Graph/Algorithms/kruskal.h"
 
 using namespace std;
 
@@ -12,7 +13,7 @@ int main(int argc, char *argv[]) {
     std::cout << "MENU GRAPH TESTER" << std::endl;
     std::cout << "================================================" << std::endl;
 
-    DirectedGraph<char, int> GND;
+    UnDirectedGraph<char, int> GND;
     GND.insertVertex("A", 5);
     GND.insertVertex("B", 50);
     GND.insertVertex("C", 1);
@@ -22,14 +23,19 @@ int main(int argc, char *argv[]) {
     GND.createEdge("C","A",2);
     GND.createEdge("D","B",20);
 
+    cout<<"Kruskal:"<<endl;
+    kruskal<char,int> Z(&GND);
+    auto nuevo_grafo2=Z.get_grafo();
+    nuevo_grafo2->display();
+
     cout<<"DFS:"<<endl;
     dfs<char,int> X(&GND,"A");
     auto nuevo_grafo=X.get_grafo();
-    nuevo_grafo->printeo();
+    nuevo_grafo->display();
 
     cout<<"BFS:"<<endl;
     bfs<char,int> Y(&GND, "A");
     auto new_graph = Y.get_grafo();
-    new_graph->printeo();
+    new_graph->display();
     return EXIT_SUCCESS;
 }
