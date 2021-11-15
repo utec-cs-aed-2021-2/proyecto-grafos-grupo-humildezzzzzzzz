@@ -48,7 +48,7 @@ public:
                 Grafo->insertVertex(v,vert[v]->data);
                 Grafo->insertVertex(min_e[v].to,vert[min_e[v].to]->data);
                 Grafo->createEdge(v,min_e[v].to,peso);
-                cout << v << " " << min_e[v].to << ' '<<vert[v]->data<<endl;
+                //cout << v << " " << min_e[v].to << ' '<<vert[v]->data<<endl;
             }
 
             for (auto &x : vert[v]->edges) {
