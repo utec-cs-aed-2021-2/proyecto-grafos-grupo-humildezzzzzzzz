@@ -5,9 +5,11 @@
 #include "Graph/Algorithms/dfs.h"
 #include "Graph/Algorithms/bfs.h"
 #include "Graph/Algorithms/kruskal.h"
+#include "Graph/Algorithms/astar.h"
 
 using namespace std;
 
+/*
 void Mostrar() {
         std::cout << "1. Insertar Vertice" << endl;
 
@@ -47,17 +49,17 @@ void Mostrar() {
                 
                 break;
             default:
-               
+
                 break;
         };
     };
-
+*/
 
 int main(int argc, char *argv[]) {
     std::cout << "================================================" << std::endl;
     std::cout << "MENU GRAPH TESTER" << std::endl;
     std::cout << "================================================" << std::endl;
-/*  
+  
     UnDirectedGraph<char, int> GND;
     GND.insertVertex("A", 5);
     GND.insertVertex("B", 50);
@@ -67,7 +69,10 @@ int main(int argc, char *argv[]) {
     GND.createEdge("B","C",6);
     GND.createEdge("C","A",2);
     GND.createEdge("D","B",20);
+    GND.createEdge("C","D",3);
+    GND.createEdge("B","D",11);
 
+/*
     cout<<"Kruskal:"<<endl;
     kruskal<char,int> Z(&GND);
     auto nuevo_grafo2=Z.get_grafo();
@@ -82,8 +87,18 @@ int main(int argc, char *argv[]) {
     bfs<char,int> Y(&GND, "A");
     auto new_graph = Y.get_grafo();
     new_graph->display();
-    */
+*/
+    cout<<"A*: "<<endl;
+    unordered_map<string,int> heuristica;
+    heuristica["A"] = 15;
+    heuristica["B"] = 18;
+    heuristica["C"] = 7;
+    heuristica["D"] = 23;
 
-    Mostrar();
+    Astar<char,int> Y(&GND, "A", "D", heuristica);
+    Y.display();
+    
+
+    //Mostrar();
     return EXIT_SUCCESS;
 }
