@@ -6,6 +6,7 @@
 #include "Graph/Algorithms/bfs.h"
 #include "Graph/Algorithms/kruskal.h"
 #include "Graph/Algorithms/astar.h"
+#include "Graph/Algorithms/dijkstra.h"
 
 using namespace std;
 
@@ -72,6 +73,20 @@ int main(int argc, char *argv[]) {
     GND.createEdge("C","D",3);
     GND.createEdge("B","D",11);
 
+    //PRUEBA DE DIJKSTRA
+    UnDirectedGraph<char,int> g2;
+    g2.insertVertex("A",2);
+    g2.insertVertex("B",2);
+    g2.insertVertex("C",2);
+
+    g2.createEdge("A","B",2);
+    g2.createEdge("A","B",23);
+    g2.createEdge("A","B",3);
+    g2.createEdge("A","B",13);
+    g2.createEdge("A","B",7);
+    g2.createEdge("A","C",19);
+    g2.createEdge("B","C",4);
+
 /*
     cout<<"Kruskal:"<<endl;
     kruskal<char,int> Z(&GND);
@@ -87,7 +102,7 @@ int main(int argc, char *argv[]) {
     bfs<char,int> Y(&GND, "A");
     auto new_graph = Y.get_grafo();
     new_graph->display();
-*/
+
     cout<<"A*: "<<endl;
     unordered_map<string,int> heuristica;
     heuristica["A"] = 15;
@@ -97,6 +112,12 @@ int main(int argc, char *argv[]) {
 
     Astar<char,int> Y(&GND, "A", "D", heuristica);
     Y.display();
+    */
+
+    cout<<"Dijkstra: "<<endl;
+    Dijkstra<char,int> Z(&GND,"A");
+    auto grafito = Z.get_grafo();
+    grafito->display();
     
 
     //Mostrar();
