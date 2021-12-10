@@ -55,5 +55,6 @@
         "unordered_set": "cpp",
         "map": "cpp",
         "string": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

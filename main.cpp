@@ -4,16 +4,17 @@
 #include "Graph/DirectedGraph.h"
 #include "Graph/Algorithms/dfs.h"
 #include "Graph/Algorithms/bfs.h"
-#include "Graph/Algorithms/bestbfs.h"
 #include "Graph/Algorithms/kruskal.h"
 #include "Graph/Algorithms/astar.h"
 #include "Graph/Algorithms/dijkstra.h"
 #include "Graph/Algorithms/bellman.h"
+#include "Graph/Algorithms/warshall.h"
+#include "Graph/Algorithms/bestbfs.h"
 
 using namespace std;
 
-auto GND = new UnDirectedGraph<char, int>;
-auto GD = new DirectedGraph<char, int>;
+auto GND = new UnDirectedGraph<string, int>;
+auto GD = new DirectedGraph<string, int>;
 bool tipo=0;
 
 void Mostrar() {
@@ -49,9 +50,9 @@ void Mostrar() {
         std::cout << "14. Salir" << endl;
 
         string c, c1;
-        DirectedGraph<char, int>* Nuevo_GD;
-        UnDirectedGraph<char, int>* Nuevo_GND;
-        bfs<char,int> X;
+        DirectedGraph<string, int>* Nuevo_GD;
+        UnDirectedGraph<string, int>* Nuevo_GND;
+        bfs<string,int> X;
         int opcion, i=0;
         std::cout
             << endl << "Ingrese el número correspondiente:  ";
@@ -66,15 +67,15 @@ void Mostrar() {
                 break;
             case 1:
                 
-                while(i!=-1){
-                    cout<<"Escribe el char y el int del nuevo vértice. Escribe un char cualquiera y -1 para salir."<<endl;
-                    cin>>c>>i;
+                while(c1!="-1"){
+                    cout<<"Escribe el string del vértice y el string de su contenido. Escribe un string cualquiera y -1 para salir."<<endl;
+                    cin>>c>>c1;
                     if(c1!="-1"){
                 if(tipo){
-                    GD->insertVertex(c, i);
+                    GD->insertVertex(c, c1);
                 }
                 else{
-                    GND->insertVertex(c, i);
+                    GND->insertVertex(c, c1);
                 }
                 }
                 }
@@ -82,7 +83,7 @@ void Mostrar() {
                 break;
             case 2:
                 while(i!=-1){
-                    cout<<"Escribe el char del nodo de entrada, el char del nodo de salida y el int de la nueva arista. Escribe un char cualquiera, otro char cualquiera y -1 para salir."<<endl;
+                    cout<<"Escribe el string del nodo de entrada, el string del nodo de salida y el int de la nueva arista. Escribe un string cualquiera, otro string cualquiera y -1 para salir."<<endl;
                     cin>>c>>c1>>i;
                     if(c1!="-1"){
                 if(tipo){
@@ -102,29 +103,29 @@ void Mostrar() {
         };
     
     if(opcion==3){
-        cout<<"Escribe el char del nodo donde empezar el recorrido.";
+        cout<<"Escribe el string del nodo donde empezar el recorrido.";
                 cin>>c;
-                bfs<char,int> X(GND,c);
+                bfs<string,int> X(GND,c);
                 if(tipo){
-                    bfs<char,int> X(GD,c);
+                    bfs<string,int> X(GD,c);
                 }
                 else{
-                    bfs<char,int> X(GND,c);
+                    bfs<string,int> X(GND,c);
                 }
                 Nuevo_GD=X.get_grafo();
                 Nuevo_GD->display();
         Mostrar();
     }
     else if(opcion==4){
-        cout<<"Escribe el char del nodo donde empezar el recorrido.";
+        cout<<"Escribe el string del nodo donde empezar el recorrido.";
                 cin>>c;
-                dfs<char,int> X(GND,c);
+                dfs<string,int> X(GND,c);
                 if(tipo){
-                    dfs<char,int> X(GD,c);
+                    dfs<string,int> X(GD,c);
 
                 }
                 else{
-                    dfs<char,int> X(GND,c);
+                    dfs<string,int> X(GND,c);
                 }
                 Nuevo_GD=X.get_grafo();
                 Nuevo_GD->display();
@@ -135,7 +136,7 @@ void Mostrar() {
             cout<<"Los MST solo se pueden ejecutar para grafos no dirigidos.";
         }
         else{
-            kruskal<char,int> X(GND);
+            kruskal<string,int> X(GND);
             Nuevo_GD=X.get_grafo();
             Nuevo_GD->display();
         }
@@ -146,22 +147,22 @@ void Mostrar() {
             cout<<"Los MST solo se pueden ejecutar para grafos no dirigidos.";
         }
         else{
-            kruskal<char,int> X(GND);
+            kruskal<string,int> X(GND);
             Nuevo_GD=X.get_grafo();
             Nuevo_GD->display();
         }
         Mostrar();
     }
      else if (opcion==7){
-          cout<<"Escribe el char del nodo donde empezar el recorrido.";
+          cout<<"Escribe el string del nodo donde empezar el recorrido.";
                 cin>>c;
         if(tipo){
-            Dijkstra<char,int> X(GD,c);
+            Dijkstra<string,int> X(GD,c);
             Nuevo_GD=X.get_grafo();
             Nuevo_GD->display();
         }
         else{
-            Dijkstra<char,int> X(GND,c);
+            Dijkstra<string,int> X(GND,c);
             Nuevo_GD=X.get_grafo();
             Nuevo_GD->display();
         }
@@ -169,7 +170,7 @@ void Mostrar() {
     }
      else if (opcion==12){
         while(c!="-1"){
-                    cout<<"Escribe el char de entrada y el char de salida del vértice a borrar. Escribe un char cualquiera y -1 para salir."<<endl;
+                    cout<<"Escribe el string de entrada y el string de salida del vértice a borrar. Escribe un string cualquiera y -1 para salir."<<endl;
                     cin>>c>>c1;
                     if(c1!="-1"){
                 if(tipo){
@@ -185,7 +186,7 @@ void Mostrar() {
     }
      else if (opcion==13){
         while(c!="-1"){
-                    cout<<"Escribe el char del vértice a borrar. Escribe -1 para salir."<<endl;
+                    cout<<"Escribe el string del vértice a borrar. Escribe -1 para salir."<<endl;
                     cin>>c;
                     if(c1!="-1"){
                 if(tipo){
@@ -211,7 +212,7 @@ void Mostrar() {
             }
             cout<<"Ingrese el ID del vértice de entrada y el ID del vértice de salida."<<endl;
             cin>>c>>c1;
-            Astar<char,int> Y(GD, c, c1, heuristica);
+            Astar<string,int> Y(GD, c, c1, heuristica);
             Y.display();
         }
         else{
@@ -223,34 +224,34 @@ void Mostrar() {
             }
             cout<<"Ingrese el ID del vértice de entrada y el ID del vértice de salida."<<endl;
             cin>>c>>c1;
-            Astar<char,int> Y(GND, c, c1, heuristica);
+            Astar<string,int> Y(GND, c, c1, heuristica);
             Y.display();
         }
         Mostrar();
     }
     else if (opcion==9){
         if(tipo){
-            warshall<char,int> X(GD);
+            warshall<string,int> X(GD);
             Nuevo_GD=X.get_grafo();
             Nuevo_GD->display();
         }
         else{
-            warshall<char,int> X(GND);
+            warshall<string,int> X(GND);
             Nuevo_GD=X.get_grafo();
             Nuevo_GD->display();
         }
         Mostrar();
     }
     else if (opcion==10){
-         cout<<"Escribe el char del nodo donde empezar el recorrido.";
+         cout<<"Escribe el string del nodo donde empezar el recorrido.";
                 cin>>c;
         if(tipo){
-            bellman<char,int> X(GD,c);
+            bellman<string,int> X(GD,c);
             Nuevo_GD=X.get_grafo();
             Nuevo_GD->display();
         }
         else{
-            bellman<char,int> X(GND,c);
+            bellman<string,int> X(GND,c);
             Nuevo_GD=X.get_grafo();
             Nuevo_GD->display();
         }
@@ -258,13 +259,32 @@ void Mostrar() {
     }
     else if (opcion==11){
         //Best BFS
+         unordered_map<string,int> heuristica;
+
         if(tipo){
-            cout<<"Los MST solo se pueden ejecutar para grafos no dirigidos.";
+            while(heuristica.size()!=GD->get_vertexes()->size()){
+                cout<<"Ingrese los IDs de los vértices junto con su valor en la heurística."<<endl;
+                cin>>c>>i;
+                heuristica[c]=i;
+            }
+            cout<<"Ingrese el ID del vértice de entrada y el ID del vértice de salida."<<endl;
+            cin>>c>>c1;
+            BestBFS<string,int> Y(GD, c, c1, heuristica);
+            Nuevo_GND=Y.get_grafo();
+            Nuevo_GND->display();
         }
         else{
-            kruskal<char,int> X(GND);
-            Nuevo_GD=X.get_grafo();
-            Nuevo_GD->display();
+            while(heuristica.size()!=GND->get_vertexes()->size()){
+                cout<<"Ingrese los IDs de los vértices junto con su valor en la heurística."<<endl;
+                cin>>c>>c1;
+                cin>>c>>i;
+                heuristica[c]=i;
+            }
+            cout<<"Ingrese el ID del vértice de entrada y el ID del vértice de salida."<<endl;
+            cin>>c>>c1;
+            BestBFS<string,int> Y(GND, c, c1, heuristica);
+            Nuevo_GND=Y.get_grafo();
+            Nuevo_GND->display();
         }
         Mostrar();
     }
@@ -275,24 +295,26 @@ int main(int argc, char *argv[]) {
     std::cout << "================================================" << std::endl;
     std::cout << "MENU GRAPH TESTER" << std::endl;
     std::cout << "================================================" << std::endl;
-  /*
-    UnDirectedGraph<char, int> GND;
-    GND.insertVertex("A", 5);
-    GND.insertVertex("B", 50);
-    GND.insertVertex("C", 1);
-    GND.insertVertex("D", 0);
+  
+    UnDirectedGraph<string, int> GND;
+    GND.insertVertex("A", "5");
+    GND.insertVertex("B", "50");
+    GND.insertVertex("C", "1");
+    GND.insertVertex("D", "0");
+    GND.insertVertex("X", "0");
     GND.createEdge("A","B",6);
     GND.createEdge("B","C",6);
     GND.createEdge("C","A",2);
     GND.createEdge("D","B",20);
     GND.createEdge("C","D",3);
     GND.createEdge("B","D",11);
+    GND.createEdge("A","X",11);
 
     //PRUEBA DE DIJKSTRA
-    UnDirectedGraph<char,int> g2;
-    g2.insertVertex("A",2);
-    g2.insertVertex("B",2);
-    g2.insertVertex("C",2);
+    UnDirectedGraph<string,int> g2;
+    g2.insertVertex("A","2");
+    g2.insertVertex("B","2");
+    g2.insertVertex("C","2");
 
     g2.createEdge("A","B",2);
     g2.createEdge("A","B",23);
@@ -301,7 +323,7 @@ int main(int argc, char *argv[]) {
     g2.createEdge("A","B",7);
     g2.createEdge("A","C",19);
     g2.createEdge("B","C",4);
-*/
+
 /*
     cout<<"Kruskal:"<<endl;
     kruskal<char,int> Z(&GND);
@@ -320,6 +342,7 @@ int main(int argc, char *argv[]) {
 
     cout<<"A*: "<<endl;
     unordered_map<string,int> heuristica;
+
     heuristica["A"] = 15;
     heuristica["B"] = 18;
     heuristica["C"] = 7;
@@ -333,8 +356,18 @@ int main(int argc, char *argv[]) {
     Dijkstra<char,int> Z(&GND,"A");
     auto grafito = Z.get_grafo();
     grafito->display();
-     */
+    
 
+    unordered_map<string,int> heuristica;
+    heuristica["A"] = 15;
+    heuristica["B"] = 18;
+    heuristica["C"] = 7;
+    heuristica["D"] = 0;
+
+    BestBFS<string,int> Y(&GND, "A", "D", heuristica);
+            auto Nuevo_GND=Y.get_grafo();
+            Nuevo_GND->display();
+             */
     Mostrar();
     return EXIT_SUCCESS;
 }
