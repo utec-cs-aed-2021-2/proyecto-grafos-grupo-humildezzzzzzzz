@@ -48,19 +48,43 @@ void clear(); // Clears the graph
 ### Algorithms:
 ```cpp
 //Given the graph
-UndirectedGraph<char, int> graph;
+UndirectedGraph<string, int> graph;
 
 //1- Generates a MST graph using the Kruskal approach (only for undirected graphs)
-Kruskal<char, int> kruskal(&graph);
-UndirectedGraph<char, int> result = kruskal.apply();//return a tree
+Kruskal<string, int> kruskal(&graph);
+UndirectedGraph<string, int> result = kruskal.get_grafo();//return a tree
 
 //2- Generates a MST graph using the Prim approach (only for undirected graphs)
-Prim<char, int> prim(&graph, "A");
-UndirectedGraph<char, int> result = prim.apply();//return a tree
+Prim<string, int> prim(&graph, "A");
+UndirectedGraph<string, int> result = prim.get_grafo();//return a tree
 
-//3- A *
-AStar<char, int> astar(&graph, "A", "Z", vector<int> heuristics);
-UndirectedGraph<char, int> result = astar.apply();
+//3- BFS 
+BFS<string, int> BFS(&graph, vertex_id);
+DirectedGraph<string, int> result = BFS.get_grafo();
+
+//4- DFS 
+DFS<string, int> DFS(&graph, vertex_id);
+DirectedGraph<string, int> result = DFS.get_grafo();
+
+//5- Dijkstra
+Dijkstra<string, int> dijkstra(&graph, id);
+DirectedGraph<string, int> result = dijkstra.get_grafo();
+
+//6- Warshall
+warshall<string, int> warshall(&graph);
+DirectedGraph<string, int> result = warshall.get_grafo();
+
+//7- Bellman
+bellman<string, int> bellman(&graph, from);
+DirectedGraph<string, int> result = bellman.get_grafo();
+
+//8- Best First Search
+BestBFS<string, int> bestbfs(&graph, "A", "Z", heuristics);
+UndirectedGraph<string, int> result = bestbfs.get_grafo();
+
+//9- A*
+AStar<string, int> astar(&graph, inicio, fin, heuristics);
+UndirectedGraph<string, int> result = astar.get_grafo();
 
 ```
 
