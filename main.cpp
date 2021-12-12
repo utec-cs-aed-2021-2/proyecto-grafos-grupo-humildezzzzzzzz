@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include<fstream>
+#include "json.hpp"
 #include "Graph/UndirectedGraph.h"
 #include "Graph/DirectedGraph.h"
 #include "Graph/Algorithms/dfs.h"
@@ -10,8 +11,10 @@
 #include "Graph/Algorithms/bellman.h"
 #include "Graph/Algorithms/warshall.h"
 #include "Graph/Algorithms/bestbfs.h"
+#include "Graph/Algorithms/parser.h"
 
 using namespace std;
+using json = nlohmann::json;
 
 auto GND = new UnDirectedGraph<string, int>;
 auto GD = new DirectedGraph<string, int>;
@@ -47,7 +50,13 @@ void Mostrar() {
 
         std::cout << "13. Eliminar Vértice" << endl;
 
-        std::cout << "14. Salir" << endl;
+         std::cout << "14. Leer archivo JSON" << endl;
+
+         std::cout << "15. Limpiar cache de archivo json" << endl;
+
+         std::cout << "16. Obtener grafo generado a partir de archivo json" << endl;
+
+        std::cout << "17. Salir" << endl;
 
         string c, c1;
         DirectedGraph<string, int>* Nuevo_GD;
@@ -288,6 +297,21 @@ void Mostrar() {
         }
         Mostrar();
     }
+    else if (opcion==14){
+        //Leer archivo JSON
+        
+        Mostrar();
+    }
+    else if (opcion==15){
+        //Clear JSON
+        
+        Mostrar();
+    }
+    else if (opcion==16){
+        //Get graph
+        
+        Mostrar();
+    }
     };
 
 
@@ -369,5 +393,10 @@ int main(int argc, char *argv[]) {
             Nuevo_GND->display();
              */
     Mostrar();
+    /*
+    std::ifstream x("Parser/Data/pe.json");
+    json j;
+    x >> j;
+    */
     return EXIT_SUCCESS;
 }
