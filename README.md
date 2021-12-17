@@ -91,7 +91,7 @@ UndirectedGraph<string, int> result = astar.get_grafo();
 Procederemos a explicar los algoritmos más complejos.
 
 ## Kruskal
-Para esta implementación, se empleó disjoints sets, y se aplico las optimizaciones de Union by Rank y Path Compression, para alcanzar una complejidad final de O(nlogm).
+Para esta implementación, se empleó disjoints sets, y se aplico las optimizaciones de Union by Rank y Path Compression, para alcanzar una complejidad final de O(eloge).
 ```cpp
 kruskal(UnDirectedGraph<TV,TE>* graph){
         Grafo = new DirectedGraph<TV,TE>;
