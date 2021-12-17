@@ -94,9 +94,9 @@ void DirectedGraph<TV,TE>:: display(){
     for(auto i = this->vertexes.begin(); i != this->vertexes.end(); i++) { //Iteramos todos los vertices menos el que va a elimina
         cout<<"From "<<(*i).first<<endl;
         for(auto &x:(*i).second->edges){
-            cout<<"To "<<x->vertexes->id<<" with "<<x->weight<<endl;
+            cout<<"To "<<x->vertexes->id<<" with "<<x->weight<<", ";
         }
-        cout<<endl;
+        cout<<endl<<endl;
     }
 };
 
