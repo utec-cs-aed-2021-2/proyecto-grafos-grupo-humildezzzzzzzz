@@ -91,7 +91,7 @@ UndirectedGraph<string, int> result = astar.get_grafo();
 Procederemos a explicar los algoritmos más complejos.
 
 ## Kruskal
-Para esta implementación, se empleó disjoints sets, y se aplico las optimizaciones de Union by Rank y Path Compression, para alcanzar una complejidad final de O(eloge).
+El algoritmo de Kruskal, permite hallar el minimum spanning tree dado un grafo no dirigido, esto es hallar un arbol que mantenga la conectividad del grafo original con el menor costo de aristas, para esta implementación, se empleó disjoints sets, y se aplico las optimizaciones de Union by Rank y Path Compression, para alcanzar una complejidad final de O(eloge).
 ```cpp
 kruskal(UnDirectedGraph<TV,TE>* graph){
         Grafo = new DirectedGraph<TV,TE>;
@@ -151,6 +151,8 @@ kruskal(UnDirectedGraph<TV,TE>* graph){
         return x==y;
     }
 ```
+##Prim
+
 
 ## JSON file parser
 * Construye un grafo a partir de una archivo JSON de aereopuertos del mundo. 
