@@ -8,6 +8,7 @@
 #include "Graph/Algorithms/dfs.h"
 #include "Graph/Algorithms/bfs.h"
 #include "Graph/Algorithms/kruskal.h"
+#include "Graph/Algorithms/prim.h"
 #include "Graph/Algorithms/astar.h"
 #include "Graph/Algorithms/dijkstra.h"
 #include "Graph/Algorithms/bellman.h"
@@ -245,7 +246,7 @@ void Mostrar() {
             cout<<"Los MST solo se pueden ejecutar para grafos no dirigidos.";
         }
         else{
-            kruskal<string,int> X(GND);
+            prim<string,int> X(GND);
             Nuevo_GD=X.get_grafo();
             Nuevo_GD->display();
         }
@@ -483,10 +484,11 @@ int main(int argc, char *argv[]) {
     std::cout << "================================================" << std::endl;
     std::cout << "MENU GRAPH TESTER" << std::endl;
     std::cout << "================================================" << std::endl;
-  
+  /*
     UnDirectedGraph<string, int>* Nuevo_GND= new UnDirectedGraph<string, int>;
-    
+    */
 UnDirectedGraph<string, int> GND;
+
     GND.insertVertex("A", "5");
     GND.insertVertex("B", "50");
     GND.insertVertex("C", "1");
@@ -501,7 +503,7 @@ UnDirectedGraph<string, int> GND;
     GND.createEdge("A","X",11);
 
     //PRUEBA DE DIJKSTRA
-    /*
+    
     UnDirectedGraph<string,int> g2;
     g2.insertVertex("A","2");
     g2.insertVertex("B","2");
@@ -514,21 +516,21 @@ UnDirectedGraph<string, int> GND;
     g2.createEdge("A","B",7);
     g2.createEdge("A","C",19);
     g2.createEdge("B","C",4);
-    */
+    
 
-/*
+
     cout<<"Kruskal:"<<endl;
-    kruskal<char,int> Z(&GND);
+    kruskal<string,int> Z(&GND);
     auto nuevo_grafo2=Z.get_grafo();
     nuevo_grafo2->display();
 
     cout<<"DFS:"<<endl;
-    dfs<char,int> X(&GND,"A");
+    dfs<string,int> X(&GND,"A");
     auto nuevo_grafo=X.get_grafo();
     nuevo_grafo->display();
 
     cout<<"BFS:"<<endl;
-    bfs<char,int> Y(&GND, "A");
+    bfs<string,int> Y(&GND, "A");
     auto new_graph = Y.get_grafo();
     new_graph->display();
 
@@ -540,26 +542,29 @@ UnDirectedGraph<string, int> GND;
     heuristica["C"] = 7;
     heuristica["D"] = 23;
 
-    Astar<char,int> Y(&GND, "A", "D", heuristica);
-    Y.display();
+    Astar<string,int> S(&GND, "A", "D", heuristica);
+    S.display();
    
 
     cout<<"Dijkstra: "<<endl;
-    Dijkstra<char,int> Z(&GND,"A");
-    auto grafito = Z.get_grafo();
+    Dijkstra<string,int> DI(&GND,"A");
+    auto grafito = DI.get_grafo();
     grafito->display();
     
 
-    unordered_map<string,int> heuristica;
-    heuristica["A"] = 15;
-    heuristica["B"] = 18;
-    heuristica["C"] = 7;
-    heuristica["D"] = 0;
+    unordered_map<string,int> heuristica2;
+    heuristica2["A"] = 15;
+    heuristica2["B"] = 18;
+    heuristica2["C"] = 7;
+    heuristica2["D"] = 0;
+     heuristica2["X"] = 20;
 
-    BestBFS<string,int> Y(&GND, "A", "D", heuristica);
-            auto Nuevo_GND=Y.get_grafo();
+    cout<<"Best BFS: "<<endl;
+    BestBFS<string,int> R(&GND, "A", "D", heuristica2);
+            auto Nuevo_GND=R.get_grafo();
             Nuevo_GND->display();
-             */
+             
+            
     Mostrar();
     /*
     std::ifstream x("Parser/Data/pe.json");
