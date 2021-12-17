@@ -287,7 +287,7 @@ warshall(T* graph){
 ```
 
 ## Best BFS
-Es el mismo procedimiento que la BFS regular, sin embargo, al momento de agregar un nodo a la cola, se ordena en base a una heurística, puede ser el peso de cada arista, o la distancia euclidiana entre muchas otras, la complejidad de este algoritmo depende de la heurística donde el peor caso es O(nlogn) ya que buscar el minimo elemento con la heurista (ordenar). El peor caso de nuestra implementacion es O(n^2) para la peor heurística funcional. También cabe destacar que nuestro algoritmo es heurística dependiente.
+Es el mismo procedimiento que la BFS regular, sin embargo, al momento de agregar un nodo a la cola, se ordena en base a una heurística, puede ser el peso de cada arista, o la distancia euclidiana entre muchas otras, la versión del algoritmo implementado es heurístico dependiente, es decir en caso la heuristica no sea perfecta, no se podra encontrar un camino, la complejidad es O(n+e).
 
 ```cpp
 explicit BestBFS(Graph<TV,TE>* grafo, string inicio, string fin, unordered_map<string,TE> heuristica){
