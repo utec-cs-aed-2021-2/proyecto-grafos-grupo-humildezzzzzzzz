@@ -62,6 +62,14 @@ public:
 
         }
 
+/*
+        map<string,bool> visited;
+        map<string, int> X;
+        visited[Inicial.id]=1;
+        X[Inicial.id]=heuristica[inicial.id];
+
+        while()
+*/
 
     }
 
