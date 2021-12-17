@@ -151,7 +151,55 @@ kruskal(UnDirectedGraph<TV,TE>* graph){
         return x==y;
     }
 ```
-##Prim
+
+## Prim
+De igual manera que el algoritmo anterior, se buscar encontrar el mst de un grafo no dirigido, este algoritmo empleando estructuras basadas en arboles binarios de busqueda (bst) logra una complejidad O(elogv).
+
+```cpp
+prim(UnDirectedGraph<TV,TE>* graph){
+        Grafo = new DirectedGraph<TV,TE>;
+        TE total_w=0;
+
+        set<edge_temp> q;
+        unordered_map<string,edge_temp> min_e;
+        unordered_map<string,bool> selected;
+        auto vert=*(graph->get_vertexes());
+        int n=graph->get_vertexes()->size();
+        edge_temp temp;
+        temp.w=0;temp.to=(vert.begin()->first);
+        q.insert(temp);
+
+        for (int i = 0; i <n; ++i) {
+            if (q.empty()) {
+                cout << "No MST!" << endl;
+                exit(0);
+            }
+
+            string v = q.begin()->to;
+            selected[v] = true;
+            TE peso=q.begin()->w;
+            total_w += q.begin()->w;
+            q.erase(q.begin());
+
+            if (min_e[v].to != ""){
+                Grafo->insertVertex(v,vert[v]->data);
+                Grafo->insertVertex(min_e[v].to,vert[min_e[v].to]->data);
+                Grafo->createEdge(v,min_e[v].to,peso);
+                //cout << v << " " << min_e[v].to << ' '<<vert[v]->data<<endl;
+            }
+
+            for (auto &x : vert[v]->edges) {
+                if (selected[x->vertexes->id]==0 && (x->weight) < min_e[x->vertexes->id].w) {
+                    temp.w=min_e[x->vertexes->id].w;
+                    temp.to=x->vertexes->id;
+                    q.erase(temp);
+                    min_e[x->vertexes->id] = {(x->weight), v};
+                    q.insert({(x->weight),x->vertexes->id });
+                }
+            }
+        }
+    }
+```
 
 
 ## JSON file parser
