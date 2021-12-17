@@ -91,7 +91,7 @@ UndirectedGraph<string, int> result = astar.get_grafo();
 Procederemos a explicar los algoritmos más complejos.
 
 ## Kruskal
-El algoritmo de Kruskal, permite hallar el minimum spanning tree dado un grafo no dirigido, esto es hallar un arbol que mantenga la conectividad del grafo original con el menor costo de aristas, para esta implementación, se empleó disjoints sets, y se aplico las optimizaciones de Union by Rank y Path Compression, para alcanzar una complejidad final de O(eloge).
+El algoritmo de Kruskal, permite hallar el minimum spanning tree dado un grafo no dirigido, esto es hallar un arbol que mantenga la conectividad del grafo original con el menor costo de aristas, para esta implementación, se empleó disjoints sets, y se aplico las optimizaciones de Union by Rank y Path Compression, para alcanzar una complejidad final de O(eloge).Funciona de la siguiente manera, sorteamos las aristas por peso e iteramos desde la menor, realizando dos operaciones, si los dos nodos no estan conectados, se precede a agregar esa arista al grafo, caso contrario se continua.
 ```cpp
 kruskal(UnDirectedGraph<TV,TE>* graph){
         Grafo = new DirectedGraph<TV,TE>;
@@ -153,8 +153,7 @@ kruskal(UnDirectedGraph<TV,TE>* graph){
 ```
 
 ## Prim
-De igual manera que el algoritmo anterior, se buscar encontrar el mst de un grafo no dirigido, este algoritmo empleando estructuras basadas en arboles binarios de busqueda (bst) logra una complejidad O(elogv).
-
+De igual manera que el algoritmo anterior, se buscar encontrar el mst de un grafo no dirigido, este algoritmo empleando estructuras basadas en arboles binarios de busqueda (bst) logra una complejidad O(elogv).Funciona de la siguiente manera, se empieza de un nodo arbitrario, buscamos la menor arista, unimos esa arista al grafo y se procede a buscar la menor arista en el nuevo grafo, asi hasta cubrir todo el grafo original.
 ```cpp
 prim(UnDirectedGraph<TV,TE>* graph){
         Grafo = new DirectedGraph<TV,TE>;
