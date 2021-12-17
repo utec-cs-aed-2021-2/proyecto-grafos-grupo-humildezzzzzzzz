@@ -88,6 +88,10 @@ UndirectedGraph<string, int> result = astar.get_grafo();
 
 ```
 
+Procederemos a explicar los algoritmos más complejos.
+
+## Kruskal
+
 
 ## JSON file parser
 * Construye un grafo a partir de una archivo JSON de aereopuertos del mundo. 
