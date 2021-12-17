@@ -13,7 +13,6 @@ string Distancia_minima(Graph<TV,TE>* &grafo, unordered_map<string,int>& dist, u
 
     for(auto &i:vertexes){
         if(dist[i.second->id] <= num && !mapita[i.second->id]){
-            num = dist[i.second->id];
             indice = i.second->id;
         }
     }
@@ -30,7 +29,6 @@ string Distancia_minima(UnDirectedGraph<TV,TE>* &grafo, unordered_map<string,int
 
     for(auto &i:vertexes){
         if(dist[i.second->id] <= num && !mapita[i.second->id]){
-            num = dist[i.second->id];
             indice = i.second->id;
         }
     }
@@ -47,7 +45,6 @@ string Distancia_minima(DirectedGraph<TV,TE>* &grafo, unordered_map<string,int>&
 
     for(auto &i:vertexes){
         if(dist[i.second->id] <= num && !mapita[i.second->id]){
-            num = dist[i.second->id];
             indice = i.second->id;
         }
     }
