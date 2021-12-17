@@ -199,30 +199,34 @@ void Mostrar() {
     if(opcion==3){
         cout<<"Escribe el string del nodo donde empezar el recorrido.";
                 cin>>c;
-                bfs<string,int> X(GND,c);
                 if(tipo){
                     bfs<string,int> X(GD,c);
+                    Nuevo_GD=X.get_grafo();
+                    Nuevo_GD->display();
                 }
                 else{
                     bfs<string,int> X(GND,c);
+                    Nuevo_GD=X.get_grafo();
+                    Nuevo_GD->display();
                 }
-                Nuevo_GD=X.get_grafo();
-                Nuevo_GD->display();
+                
+        cout<<"X"<<endl;
         Mostrar();
     }
     else if(opcion==4){
         cout<<"Escribe el string del nodo donde empezar el recorrido.";
                 cin>>c;
-                dfs<string,int> X(GND,c);
+                cout<<"X"<<endl;
                 if(tipo){
                     dfs<string,int> X(GD,c);
-
+                    Nuevo_GD=X.get_grafo();
+                    Nuevo_GD->display();
                 }
                 else{
                     dfs<string,int> X(GND,c);
+                    Nuevo_GD=X.get_grafo();
+                    Nuevo_GD->display();
                 }
-                Nuevo_GD=X.get_grafo();
-                Nuevo_GD->display();
                 Mostrar();
     }
     else if (opcion==5){
