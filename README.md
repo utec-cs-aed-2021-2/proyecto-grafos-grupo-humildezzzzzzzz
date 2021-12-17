@@ -4,9 +4,9 @@
 --------
 
 ## Integrantes
-- Juan Sebastian Sara Junco
-- Denis Irala Morales
-- Plinio Matias Avendaño Vargas
+- Juan Sebastian Sara Junco (100%)
+- Denis Irala Morales (100%)
+- Plinio Matias Avendaño Vargas (100%)
 
 ----
 
@@ -287,7 +287,7 @@ warshall(T* graph){
 ```
 
 ## Best BFS
-Es el mismo procedimiento que la BFS regular, sin embargo, al momento de agregar un nodo a la cola, se ordena en base a una heurística, puede ser el peso de cada arista, o la distancia euclidiana entre muchas otras. La versión del algoritmo implementado es heurístico-dependiente, es decir que en caso la heurística no sea perfecta, no se podrá encontrar un camino, la complejidad es O(n+e).
+Es el mismo procedimiento que la BFS regular, sin embargo, al momento de agregar un nodo a la cola, se ordena en base a una heurística, puede ser el peso de cada arista, o la distancia euclidiana entre muchas otras, la complejidad de este algoritmo depende de la heurística donde el peor caso es O(nlogn) ya que buscar el minimo elemento con la heurista (ordenar). El peor caso de nuestra implementacion es O(n^2) para la peor heurística funcional. También cabe destacar que nuestro algoritmo es heurística dependiente.
 
 ```cpp
 explicit BestBFS(Graph<TV,TE>* grafo, string inicio, string fin, unordered_map<string,TE> heuristica){
@@ -324,6 +324,134 @@ explicit BestBFS(Graph<TV,TE>* grafo, string inicio, string fin, unordered_map<s
             result->createEdge(Inicial.id, current->id, edge->weight);
 
 
+        }
+```
+
+## A*
+Se creo una cola de prioridad (open) y dos unordered_set (open1 y close), ademas utilizamos dos mapas (scoreG y scoreF), el primero se encarga de guardar el peso o coste real desde el inicio del nodo hasta donde se encuentre, por otro lado, el segundo se encarga de almacenar el coste ideal que necesitamos para poder llegar a nuestro destino, este incluye la heuristica. Primero incluimos nuestro nodo inicial en "open" y entramos en un loop donde verificara que "open" no este vacio. Dentro de este obtenemos el id del nodo, luego verificamos si este nodo es nuestro destino final, de ser el caso, llamaremos a la funcion "construir_camino" para poder armar el grafo, sin embargo, si el nodo en el que estamos no es el destino final, entonces insertamos nuestro nodo al close y tomamos los nodos vecinos. Cabe resaltar, que durante la verificacion se almacena la suma del peso al nodo adaycente mas el peso que acumulado que tenemos hasta nuestra posicion actual a la variable "scoreG_posible", esto tiene que ocurrir si el nodo adyacente no esta en el "open". Si se encuentra en, entonces se incluye en el camino.
+```cpp
+explicit Astar(Graph<TV,TE>* grafo, string inicio, string fin, unordered_map<string,TE> heuristica){
+        priority_queue<pair<Vertex<TV,TE>*, TE>, vector<pair<Vertex<TV,TE>*, TE>>, Comparator<TV,TE>> open; //Nos indicara de manera ordenada los nodos abiertos para recorrer
+        unordered_set<string> open1; //set de nodos abiertos
+        unordered_set<string> close; //set de nodos ya recorridos
+
+        map<string, TE> scoreG;
+        scoreG[inicio] = 0; //costo inicial o coste realista
+        map<string, TE> scoreF;
+        scoreF[inicio] = heuristica[inicio]; //coste ideal para llegar a nuestro destino
+        
+        auto vertexes = *(grafo->get_vertexes());
+
+        open.push(make_pair(vertexes[inicio], scoreF[inicio])); //Pusheamos el primer nodo
+
+        while(!open.empty()){
+            Vertex<TV,TE>* current = open.top().first;
+            open.pop(); //lo sacamos del open set
+            if(current->id == fin){ //Si el id del nodo actual es el mismo que nuestro nodo final
+                cout<<current->id<<" tiene un coste de "<<scoreG[current->id]<<" y si se incluye la heuristica se tendria de coste "<<scoreF[current->id]<<endl;
+                cout<<"--------------BACKTRACKING--------------"<<endl;
+                construir_camino(current->id,grafo,inicio); //Reconstruimos el camino
+                return;
+            }
+
+            close.insert(current->id); //Lo incluimos en el set de nodos tomados
+            for(auto i = current->edges.begin(); i != current->edges.end(); i++){ //For para sacar nuestro menor coste para llegar al final
+                string aux = (*i)->vertexes->id; //auxiliar toma el nodo de llegada del nodo actual
+                if(close.find(aux) != close.end()){ //si ese nodo ha sido tomado, entonces continua
+                    continue;
+                }
+                TE scoreG_posible = scoreG[current->id] + (*i)->weight; //calculamos el coste ideal para llegar al destino
+
+                //Este if toma los nodos candidatos a para llegar al final
+                if(open1.find(aux) == open1.end()){ //Si en nuestro set de nodos abierto no esta el nodo de llegada, entonces se calculan los costes
+                    Ida[aux] = current->id; 
+                    scoreG[aux] = scoreG_posible; //Realista
+                    scoreF[aux] = scoreG_posible + heuristica[aux]; //Ideal segun heuristica
+                    open.push(make_pair((*i)->vertexes, scoreF[aux])); //Se incluye en la priority_queue de nodos abiertos
+                    open1.insert(aux); //Se incluye en el set de nodos abiertos
+                }
+
+                if(scoreG_posible >= scoreG[(*i)->vertexes->id]){ //Si el score candidato es mayor o igual al que tenemos ahorita
+                    continue; //continuamos
+                }
+
+                Ida[aux] = current->id; //Se incluye en el camino 
+                scoreG[aux] = scoreG_posible; //El score posible es ahora nuestro actual score
+                scoreF[aux] = scoreG_posible + heuristica[(*i)->vertexes->id]; //Score ideal tomando heuristica 
+            }
+        }
+    }
+
+    void construir_camino(string current, Graph<TV,TE>* grafo, const string& inicio){
+        path.push_front(current);
+        result = new UnDirectedGraph<TV,TE>;
+
+        while(Ida.find(current) != Ida.end() && current != inicio){
+            auto vertexes = *(grafo->get_vertexes()); //Si el nodo actual ha sido visitado y es diferente al nodo de inicio
+            Vertex<TV,TE>* v1 = vertexes[current]; //Tomamos el nodo actual
+
+            result->insertVertex(v1->id,v1->data); //Lo incluimos en el grafo
+            current = Ida[current]; //tomamos el siguiente nodo que conecta con nuestro actual nodo
+
+            Vertex<TV,TE>* v2 = vertexes[current]; //tomamos el siguiente nodo
+            result->insertVertex(v2->id,v2->data); //lo insertamos en nuestro grafo
+            TE p = 0; //peso
+
+            for(auto i = v1->edges.begin(); i != v1->edges.end(); i++){ //for para obtener el peso de la conexion entre los nodos
+                if(current == (*i)->vertexes->id){
+                    p = (*i)->weight; //Se le suma el peso
+                }
+            }
+            result->createEdge(v1->id,v2->id,p); //Creamos la arista
+            cout<<v1->id<<" su padre es "<<v2->id<<endl;
+            path.push_front(current); //pusheamos al camino
+        }
+    }
+
+```
+
+## Dijkstra
+Para el desarrollo de este algoritmo, utilizamos una variable dist, que guarda la distancia o coste desde un nodo, la variable mapita que almacena los nodos e identifica si fueron tomados en el camino y una variable vertices_distancia que guardara los nodos a los que se dirige. Ademas, se usa una funcion llamada "distancia_minima" que nos mandara el indice del nodo a tomar en cuenta. Cabe resalta, que todos los vertices tendran de coste inicial de INT32_MAX que simulara el infinito en nuestra implementacion. El coste de nuestro algoritmo es O(|A| log |V|).
+```cpp
+Dijkstra(Graph<TV,TE>* grafo, const string& id){
+        result = new DirectedGraph<TV,TE>;
+        unordered_map<string,int> dist; //Guarda la distancia o el coste desde un nodo
+        unordered_map<string,bool> mapita; //Almacena nuestro nodos e identifica si estos fueron tomados en cuenta para la construcion del camino
+        unordered_map<string,pair<Vertex<TV,TE>*,string>> vertices_distancia; //Mapa del vertice y a donde se dirige
+
+        auto vertexes = *(grafo->get_vertexes());
+        for(auto &i:vertexes){ //Recorremos todos los vertices del grafo
+            if(i.second->id == id){ //Si el id de nuestro vertice es igual al de nuestra llegada 
+                dist[i.second->id] = 0; //Se pone 0
+            }
+            else{
+                dist[i.second->id] = INT32_MAX; //Sino, se le considera como infinito
+            }
+
+            mapita[i.second->id] = false; //Se le añade al mapa como primer nodo no incluido en el camino corto
+            pair<Vertex<TV,TE>*, string> aux (i.second,i.second->id); //variable auxiliar del nodo de llegada
+            vertices_distancia[i.second->id] = aux; //se incluye en el mapa con su id y nodo (servira para constuir el camino)
+            result->insertVertex(i.second->id,i.second->data); //Se le inserta al grafo
+        }
+
+        for(int i = 0; i < vertexes.size() - 1;i++){ //recorremos n - 1 nodos
+            string dist_min = Distancia_minima(grafo,dist,mapita); //tomamos el nodo que nos da la minima distancia
+            mapita[dist_min] = true; //Lo incluimos en el mapita como uno de los nodos que nos construye el camino opotimo
+            
+            for(auto j:vertexes){ //Recorremos los vertices 
+                if(dist[dist_min] != INT32_MAX && !mapita[j.second->id]){ //Si el nodo que nos da la minima distancia es diferente de infinito y el vertice a evaluar no ha sido tomado en cuenta para el camino corto
+                    auto nodo = vertices_distancia[dist_min].first; //tomamos el nodo perteneciente al camino corto
+                    for(auto k : nodo->edges){ //recorremos sus aristas
+                        if(k->vertexes->id == j.second->id){ //Si su vertice de llegada es igual al vertice que estamos evaluando
+                            if(dist[j.second->id] > dist[dist_min] + k->weight){ //Si la distancia hasta ese punto con el nodo a evaluar es mayor a la suma del nodo con la distancia minima y uno de los pesos de sus aristas a otros nodos
+                                dist[j.second->id] = dist[dist_min] + k->weight; //Entonces se le asigna un nuevo coste al camino 
+                                pair<Vertex<TV,TE>*, string> aux (vertices_distancia[j.second->id].first,dist_min); 
+                                vertices_distancia[j.second->id] = aux; //incluimos el nodo actual con su nuevo coste y nodo de llegada, que en ese caso sera el nodo que da el camino corto
+                            }
+                        }
+                    }
+                }
+            }
         }
 ```
 
