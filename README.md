@@ -10,7 +10,7 @@
 
 ----
 
-El proyecto del curso consiste en implementar una estructura de datos de grafo y un file parser. La estructura debe soportar los métodos y algoritmos descritos a continuacion:  
+El proyecto del curso consiste en implementar una estructura genérica de grafo y un file parser. La cual debe soportar los métodos y algoritmos descritos a continuacion:  
 
 
 ## Graph data structure
