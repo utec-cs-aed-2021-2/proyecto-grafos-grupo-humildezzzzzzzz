@@ -286,6 +286,47 @@ warshall(T* graph){
 
 ```
 
+## Best BFS
+Es el mismo procedimiento que la BFS regular, sin embargo, al momento de agregar un nodo a la cola, se ordena en base a una heurística, puede ser el peso de cada arista, o la distancia euclidiana entre muchas otras, la complejidad de este algoritmo es O(nlogn) ya que buscar el minimo elemento con la heurista (ordenar), aunque nuestra implementacion es O(n^2) y heurística dependiente
+
+```cpp
+explicit BestBFS(Graph<TV,TE>* grafo, string inicio, string fin, unordered_map<string,TE> heuristica){
+        //priority_queue<pair<Vertex<TV,TE>*, TE>, vector<pair<Vertex<TV,TE>*, TE>>, Comparator<TV,TE>> open; //Nos indicara de manera ordenada los nodos abiertos para recorrer
+        //unordered_set<string> open1; //set de nodos abiertos
+        //unordered_set<string> close; //set de nodos ya recorridos
+/*
+        map<string, TE> scoreG;
+        scoreG[inicio] = 0; //costo inicial o coste realista
+        map<string, TE> scoreF;
+        scoreF[inicio] = heuristica[inicio]; //coste ideal para llegar a nuestro destino
+*/
+        auto vertexes = *(grafo->get_vertexes());
+        auto current = vertexes[inicio];
+        auto weight = heuristica[current->id];
+        auto Inicial = *vertexes[inicio];
+        result->insertVertex(Inicial.id, Inicial.data);
+        auto edge = *(current->edges.begin());
+
+        while(heuristica[current->id]!=0){
+
+            for(auto i = current->edges.begin(); i != current->edges.end(); i++){
+
+                if(heuristica[(*i)->vertexes[0].id]<weight){
+                    edge = *(i);
+                    weight = heuristica[edge->vertexes[0].id];
+                }
+
+            }
+
+            Inicial = *current;
+            *current = (edge->vertexes[0]);
+            result->insertVertex(current->id, current->data);
+            result->createEdge(Inicial.id, current->id, edge->weight);
+
+
+        }
+```
+
 
 ## JSON file parser
 * Construye un grafo a partir de una archivo JSON de aereopuertos del mundo. 
