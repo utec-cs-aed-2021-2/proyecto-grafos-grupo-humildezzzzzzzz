@@ -1,5 +1,7 @@
 #include <iostream>
 #include<fstream>
+#include <math.h>
+#include <string>
 #include "json.hpp"
 #include "Graph/UndirectedGraph.h"
 #include "Graph/DirectedGraph.h"
@@ -18,7 +20,90 @@ using json = nlohmann::json;
 
 auto GND = new UnDirectedGraph<string, int>;
 auto GD = new DirectedGraph<string, int>;
+bool is_json=0;
 bool tipo=0;
+json j;
+
+
+
+double distancia_euclediana(double latitude1, double longitude1, double latitude2, double longitude2){
+        return sqrt(pow((latitude1 - latitude2), 2) + pow((longitude1 - longitude2), 2));
+    }
+
+void uGraphMake(UnDirectedGraph<string, int>* &tempGraph){
+        for (json::iterator it = j.begin(); it != j.end(); ++it) {
+        tempGraph->insertVertex((*it)["Airport ID"], to_string((*it)["Latitude"]) + "," + to_string((*it)["Longitude"]));
+    }
+    for (json::iterator it = j.begin(); it != j.end(); ++it) {
+        for(int i=0; i<(*it)["destinations"].size(); i++){
+            string coords = tempGraph->operator[]((*it)["destinations"][i]);
+            if(coords.size()==0) continue;
+            double latitude2, longitude2, latitude1, longitude1;
+            string a, b,c,d;
+
+            for(int x=0; x<coords.length(); x++){
+                if(coords[x]==','){
+                    a=coords.substr(0,x-1);
+                    b=coords.substr(x+1,coords.length());
+                    
+                }
+            }
+            c=(*it)["Latitude"];
+            d=(*it)["Longitude"];
+            a.erase(remove(a.begin(), a.end(), '"'), a.end());
+            b.erase(remove(b.begin(), b.end(), '"'), b.end());
+            c.erase(remove(c.begin(), c.end(), '"'), c.end());
+            d.erase(remove(d.begin(), d.end(), '"'), d.end());
+            /*
+            cout<<a<<endl<<b<<endl<<c<<endl<<d<<endl<<endl;   
+            if(a.size()==0) cout<<(*it)["destinations"][i]<<endl<<coords<<endl;      
+            */
+            latitude2=std::stod(a);
+            longitude2=std::stod(b);
+            latitude1=std::stod(c);
+            longitude1=std::stod(d);
+            tempGraph->createEdge((*it)["Airport ID"],(*it)["destinations"][i], distancia_euclediana(latitude1, longitude1, latitude2,longitude2));
+        }
+    }
+    };
+
+void dGraphMake(DirectedGraph<string, int>* &tempGraph){
+       for (json::iterator it = j.begin(); it != j.end(); ++it) {
+        tempGraph->insertVertex((*it)["Airport ID"], to_string((*it)["Latitude"]) + "," + to_string((*it)["Longitude"]));
+    }
+    for (json::iterator it = j.begin(); it != j.end(); ++it) {
+        for(int i=0; i<(*it)["destinations"].size(); i++){
+            string coords = tempGraph->operator[]((*it)["destinations"][i]);
+            if(coords.size()==0) continue;
+            double latitude2, longitude2, latitude1, longitude1;
+            string a, b,c,d;
+
+            for(int x=0; x<coords.length(); x++){
+                if(coords[x]==','){
+                    a=coords.substr(0,x-1);
+                    b=coords.substr(x+1,coords.length());
+                    
+                }
+            }
+           
+            c=(*it)["Latitude"];
+            d=(*it)["Longitude"];
+            a.erase(remove(a.begin(), a.end(), '"'), a.end());
+            b.erase(remove(b.begin(), b.end(), '"'), b.end());
+            c.erase(remove(c.begin(), c.end(), '"'), c.end());
+            d.erase(remove(d.begin(), d.end(), '"'), d.end());
+            /*
+            cout<<a<<endl<<b<<endl<<c<<endl<<d<<endl<<endl;   
+            if(a.size()==0) cout<<(*it)["destinations"][i]<<endl<<coords<<endl;      
+            */
+            latitude2=std::stod(a);
+            longitude2=std::stod(b);
+            latitude1=std::stod(c);
+            longitude1=std::stod(d);
+            tempGraph->createEdge((*it)["Airport ID"],(*it)["destinations"][i], distancia_euclediana(latitude1, longitude1, latitude2,longitude2));
+        }
+    }
+    };
 
 void Mostrar() {
 
@@ -269,7 +354,9 @@ void Mostrar() {
     else if (opcion==11){
         //Best BFS
          unordered_map<string,int> heuristica;
+         string entrada, salida;
 
+        if(!is_json){
         if(tipo){
             while(heuristica.size()!=GD->get_vertexes()->size()){
                 cout<<"Ingrese los IDs de los vértices junto con su valor en la heurística."<<endl;
@@ -295,21 +382,94 @@ void Mostrar() {
             Nuevo_GND=Y.get_grafo();
             Nuevo_GND->display();
         }
+        }
+        else{
+            //Heuristica de Airport
+            cout<<"Escriba el ID del aeropuerto de entrada entre comillas y luego el ID del aeropuerto de salida entre comillas.";
+            cin>>entrada>>salida;
+            string coords;
+            if(tipo) coords = GD->operator[](salida);
+            else coords = GND->operator[](salida);
+
+            double latitude2, longitude2, latitude1, longitude1;
+            string a, b,c,d;
+
+            for(int x=0; x<coords.length(); x++){
+                if(coords[x]==','){
+                    a=coords.substr(0,x-1);
+                    b=coords.substr(x+1,coords.length());
+                    
+                }
+            }
+            a.erase(remove(a.begin(), a.end(), '"'), a.end());
+            b.erase(remove(b.begin(), b.end(), '"'), b.end());
+
+            latitude1=std::stod(a);
+            longitude1=std::stod(b);
+
+            for (json::iterator it = j.begin(); it != j.end(); ++it) {
+            c=(*it)["Latitude"];
+            d=(*it)["Longitude"];
+            c.erase(remove(c.begin(), c.end(), '"'), c.end());
+            d.erase(remove(d.begin(), d.end(), '"'), d.end());
+            
+            latitude2=std::stod(c);
+            longitude2=std::stod(d);
+            heuristica[(*it)["Airport ID"]]=distancia_euclediana(latitude1, longitude1, latitude2,longitude2);
+            heuristica[salida]=0;
+            }
+            BestBFS<string,int> Y(GD, entrada, salida, heuristica);
+            Nuevo_GND=Y.get_grafo();
+            Nuevo_GND->display();
+
+            
+
+            
+            
+            
+        }
         Mostrar();
     }
     else if (opcion==14){
         //Leer archivo JSON
+       
+            
+        cout<<"Ingresa la dirección del archivo."<<endl;
         
+        string x;
+        cin>>x;
+        
+        std::ifstream i(x);
+    i >> j;
+ if(tipo){
+     //Grafo Dirigido
+     /*
+
+*/
+    dGraphMake(GD);
+    is_json=1;
+        }
+        else {
+            //Grafo No Dirigido
+            uGraphMake(GND);
+            is_json=1;
+        }
+        cout<<"Archivo JSON leído exitosamente.";
         Mostrar();
     }
     else if (opcion==15){
         //Clear JSON
-        
+        j.clear();
+        cout<<"Archivo JSON vaciado exitosamente.";
+        is_json=0;
         Mostrar();
     }
     else if (opcion==16){
         //Get graph
-        
+        if(tipo){
+            GD->display();
+        }
+        else GND->display();
         Mostrar();
     }
     };
@@ -320,7 +480,9 @@ int main(int argc, char *argv[]) {
     std::cout << "MENU GRAPH TESTER" << std::endl;
     std::cout << "================================================" << std::endl;
   
-    UnDirectedGraph<string, int> GND;
+    UnDirectedGraph<string, int>* Nuevo_GND= new UnDirectedGraph<string, int>;
+    
+UnDirectedGraph<string, int> GND;
     GND.insertVertex("A", "5");
     GND.insertVertex("B", "50");
     GND.insertVertex("C", "1");
@@ -335,6 +497,7 @@ int main(int argc, char *argv[]) {
     GND.createEdge("A","X",11);
 
     //PRUEBA DE DIJKSTRA
+    /*
     UnDirectedGraph<string,int> g2;
     g2.insertVertex("A","2");
     g2.insertVertex("B","2");
@@ -347,6 +510,7 @@ int main(int argc, char *argv[]) {
     g2.createEdge("A","B",7);
     g2.createEdge("A","C",19);
     g2.createEdge("B","C",4);
+    */
 
 /*
     cout<<"Kruskal:"<<endl;
@@ -395,8 +559,10 @@ int main(int argc, char *argv[]) {
     Mostrar();
     /*
     std::ifstream x("Parser/Data/pe.json");
-    json j;
     x >> j;
+    uGraphMake(Nuevo_GND);
+    Nuevo_GND->display();
     */
+    //std::cout<<"SUCCESS"<<endl;
     return EXIT_SUCCESS;
 }

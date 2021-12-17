@@ -51,6 +51,14 @@ public:
     virtual bool findById(string id) = 0;
     virtual void display() = 0;
     virtual unordered_map<string,Vertex<TV,TE>*>* get_vertexes() = 0;
+    TV operator[](string id){
+    if(this->vertexes.find(id) != this->vertexes.end()){
+        return this->vertexes[id]->data;
+    }
+    else{
+        return TV();
+    }
+}
 };
 
 #endif

@@ -45,7 +45,6 @@ public:
 
         while(heuristica[current->id]!=0){
 
-
             for(auto i = current->edges.begin(); i != current->edges.end(); i++){
 
                 if(heuristica[(*i)->vertexes[0].id]<weight){

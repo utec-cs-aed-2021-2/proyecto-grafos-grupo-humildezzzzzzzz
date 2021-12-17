@@ -2,7 +2,8 @@
 #define NONDIRECTEDGRAPH_H
 
 #include "graph.h"
-
+#include <iostream>
+using namespace std;
 
 template<typename TV, typename TE>
 class DirectedGraph : public Graph<TV, TE>{
@@ -118,13 +119,13 @@ template<typename TV, typename TE>
 TE& DirectedGraph<TV,TE>::operator()(string start, string end){
     if(this->vertexes.count(start)==0 || this->vertexes.count(end)==0 ){
         cout<<"No existe vertice"<<endl;
-        return *(new int(-1));
+        return *(new TE(-1));
     }
     for(auto &i:this->vertexes[start]->edges){
         if(i->vertexes->id == end) return i->weight;
     }
     cout<<"La conexion no existe"<<endl;
-    return *(new int(-1));
+    return *(new TE(-1));
 }
 
 template<typename TV, typename TE>
