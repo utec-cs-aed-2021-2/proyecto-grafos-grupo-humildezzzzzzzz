@@ -235,6 +235,57 @@ El presente algoritmo permite dado un nodo v encontrar la longitud de los camino
         }
 
 ```
+## Warshall
+
+El algoritmo de Warshall, permite encontrar los caminos mínimos de todos los nodos hacia todos los nodos, en complejidad O(v^3), esto es posible mediante una matriz de distancias, la cual se va actualizando conforme cada iteracion basada en la siguiente operacion d[i][j]=min(d[i][j],d[i][k]+d[k][j]), eso es para un nodo arbitrario k, que sea un intermediario entre i-j.
+
+```cpp
+warshall(T* graph){
+            Grafo = new DirectedGraph<TV,TE>;
+            auto vert=*(graph->get_vertexes());
+            int n=vert.size();
+            unordered_map<string,int> pc;
+            vector<string> revers(n);
+            int ind=0;
+            for(auto &x:vert){
+                pc[x.first]=ind;
+                revers[ind]=x.first;
+                ind++;
+                Grafo->insertVertex(x.first,x.second->data);
+            }
+
+            TE dist[n][n];
+
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++) dist[i][j]=2147483647;
+                dist[i][i]=0;
+            }
+
+            for(auto &x:vert){
+                for(auto &y:x.second->edges) dist[pc[x.first]][pc[y->vertexes->id]]=y->weight;
+            }
+
+
+            for (int k = 0; k < n; ++k) {
+                for (int i = 0; i < n; ++i) {
+                    for (int j = 0; j < n; ++j) {
+                        if (dist[i][k] < 2147483647 && dist[k][j] < 2147483647) dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+                    }
+                }
+            }
+
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++){
+                    if(dist[i][j]!=2147483647){
+                        Grafo->createEdge(revers[i],revers[j],dist[i][j]);
+                    }
+                }
+            }
+
+        }
+
+```
+
 
 ## JSON file parser
 * Construye un grafo a partir de una archivo JSON de aereopuertos del mundo. 
