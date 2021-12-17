@@ -153,7 +153,7 @@ kruskal(UnDirectedGraph<TV,TE>* graph){
 ```
 
 ## Prim
-De igual manera que el algoritmo anterior, se buscar encontrar el mst de un grafo no dirigido, este algoritmo empleando estructuras basadas en arboles binarios de busqueda (bst) logra una complejidad O(elogv).Funciona de la siguiente manera, se empieza de un nodo arbitrario, buscamos la menor arista, unimos esa arista al grafo y se procede a buscar la menor arista en el nuevo grafo, asi hasta cubrir todo el grafo original.
+De igual manera que el algoritmo anterior, se buscar encontrar el mst de un grafo no dirigido, este algoritmo empleando estructuras basadas en arboles binarios de busqueda (bst) logra una complejidad O(elogv).Funciona de la siguiente manera, se empieza de un nodo arbitrario, buscamos la menor arista, unimos esa arista al grafo y se procede a buscar la menor arista en el nuevo conjunto de nodos, asi hasta cubrir todo el grafo original.
 ```cpp
 prim(UnDirectedGraph<TV,TE>* graph){
         Grafo = new DirectedGraph<TV,TE>;
@@ -200,6 +200,41 @@ prim(UnDirectedGraph<TV,TE>* graph){
     }
 ```
 
+## BellmanFord
+
+El presente algoritmo permite dado un nodo v encontrar la longitud de los caminos más cortos a todos los vértices del grafo, a diferencia de Djikstra este se puede aplicar a grafos con aristas negativas, funciona de la siguiente manera, se emplea un vector de distancias inicializado en infinito para todos los demás nodos a excepción del mismo, en cada iteracion se va actualizando este valor si se logra bajar el peso, la complejidad es O(ve).
+
+```cpp
+ bellman(T* graph,string from){
+            Grafo = new DirectedGraph<TV,TE>;
+            auto vert=*(graph->get_vertexes());
+            unordered_map<string,TE> dist;
+
+            for(auto &x:vert){
+                Grafo->insertVertex(x.first,x.second->data);
+                dist[x.first] = 2147483647;
+            }
+            dist[from]=0;
+            for(;;){
+                bool any=0;
+                for(auto &x:vert){
+                    for(auto &y:x.second->edges){
+                        if(dist[x.first]<2147483647){
+                            if(dist[y->vertexes->id]>dist[x.first]+y->weight){
+                                dist[y->vertexes->id]=dist[x.first]+y->weight;
+                                any=1;
+                            }
+                        }
+                    }
+                }
+                if(any==0) break;
+            }
+            for(auto &x:dist){
+                if(x.second!=2147483647) Grafo->createEdge(from,x.first,x.second);
+            }
+        }
+
+```
 
 ## JSON file parser
 * Construye un grafo a partir de una archivo JSON de aereopuertos del mundo. 
